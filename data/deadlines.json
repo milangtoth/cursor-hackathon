@@ -1,0 +1,51 @@
+[
+  {
+    "id": "dl-cs101-a1",
+    "courseId": "cs101",
+    "title": "Assignment 1: Sorting visualiser",
+    "dueAt": "2026-10-14T23:59:00.000Z",
+    "source": { "materialId": "mat-cs101-a1", "page": 1 }
+  },
+  {
+    "id": "dl-cs101-project",
+    "courseId": "cs101",
+    "title": "Graph project checkpoint",
+    "dueAt": "2026-11-28T23:59:00.000Z",
+    "source": { "materialId": "mat-cs101-graphs", "page": 2 }
+  },
+  {
+    "id": "dl-cs101-exam",
+    "courseId": "cs101",
+    "title": "Final exam",
+    "dueAt": "2026-12-12T09:00:00.000Z",
+    "source": { "materialId": "mat-cs101-syllabus", "page": 2 }
+  },
+  {
+    "id": "dl-db201-er",
+    "courseId": "db201",
+    "title": "Assignment 1: ER modelling",
+    "dueAt": "2026-10-14T23:59:00.000Z",
+    "source": { "materialId": "mat-db201-er", "page": 1 }
+  },
+  {
+    "id": "dl-db201-midterm",
+    "courseId": "db201",
+    "title": "Midterm test",
+    "dueAt": "2026-11-02T09:00:00.000Z",
+    "source": { "materialId": "mat-db201-syllabus", "page": 2 }
+  },
+  {
+    "id": "dl-db201-project",
+    "courseId": "db201",
+    "title": "Normalisation mini-project",
+    "dueAt": "2026-11-20T23:59:00.000Z",
+    "source": { "materialId": "mat-db201-norm", "page": 2 }
+  },
+  {
+    "id": "dl-db201-exam",
+    "courseId": "db201",
+    "title": "Final exam",
+    "dueAt": "2026-12-15T09:00:00.000Z",
+    "source": { "materialId": "mat-db201-syllabus", "page": 2 }
+  }
+]

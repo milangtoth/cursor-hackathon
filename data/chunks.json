@@ -1,0 +1,42 @@
+[
+  {
+    "id": "mat-db201-syllabus-p2-c0",
+    "courseId": "db201",
+    "materialId": "mat-db201-syllabus",
+    "page": 2,
+    "text": "Assessment deadlines for Introduction to Databases (DB201). Assignment 1: ER modelling is due 14 October 2026, 23:59. Midterm test: 2 November 2026. Final exam: 15 December 2026.",
+    "embedding": []
+  },
+  {
+    "id": "mat-db201-er-p1-c0",
+    "courseId": "db201",
+    "materialId": "mat-db201-er",
+    "page": 1,
+    "text": "Submit your ER diagram via the portal before 23:59 on 14 October 2026. Late work loses 10% per day.",
+    "embedding": []
+  },
+  {
+    "id": "mat-db201-norm-p2-c0",
+    "courseId": "db201",
+    "materialId": "mat-db201-norm",
+    "page": 2,
+    "text": "Remember that the normalisation mini-project must be in the dropbox by 20 November 2026.",
+    "embedding": []
+  },
+  {
+    "id": "mat-db201-lab-p1-c0",
+    "courseId": "db201",
+    "materialId": "mat-db201-lab",
+    "page": 1,
+    "text": "Your lab report for Query Lab 3 is due on 9 November 2026 at 17:00. This deadline is intentionally not pre-extracted so the live Extract tasks button has something to do.",
+    "embedding": []
+  },
+  {
+    "id": "mat-cs101-a1-p1-c0",
+    "courseId": "cs101",
+    "materialId": "mat-cs101-a1",
+    "page": 1,
+    "text": "Submit your sorting visualiser via the portal before 23:59 on 14 October 2026.",
+    "embedding": []
+  }
+]

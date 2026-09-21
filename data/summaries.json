@@ -1,0 +1,10 @@
+{
+  "mat-cs101-syllabus": "CS101 covers algorithm analysis, sorting, trees and graphs. Assessment is one assignment, a graph project checkpoint, and a written exam on 12 December 2026.",
+  "mat-cs101-sorting": "Compares insertion sort, mergesort and quicksort, with emphasis on average vs worst-case complexity and when a stable sort matters.",
+  "mat-cs101-a1": "Build a sorting visualiser for insertion sort and mergesort. Submit via the portal before 23:59 on 14 October 2026. Pair work is allowed.",
+  "mat-cs101-graphs": "Introduces BFS, DFS and Dijkstra. The graph project checkpoint is due 28 November 2026.",
+  "mat-db201-syllabus": "DB201 is an introduction to relational databases: ER modelling, SQL, and normalisation. Key dates include Assignment 1 on 14 October, a midterm on 2 November, and the exam on 15 December 2026.",
+  "mat-db201-sql": "Covers SELECT, JOIN, GROUP BY and subqueries, mapping each construct back to relational algebra.",
+  "mat-db201-er": "Design an ER diagram for a library system and submit it before 23:59 on 14 October 2026.",
+  "mat-db201-norm": "Walks through 1NF, 2NF and 3NF with a running example. The normalisation mini-project is due 20 November 2026."
+}

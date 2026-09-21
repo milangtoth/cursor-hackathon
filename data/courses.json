@@ -1,0 +1,54 @@
+[
+  {
+    "id": "cs101",
+    "code": "CS101",
+    "title": "Algorithms & Data Structures",
+    "teacherId": "u-maya",
+    "modules": [
+      {
+        "id": "m-cs101-week1",
+        "title": "Week 1: Foundations",
+        "order": 1,
+        "materialIds": ["mat-cs101-syllabus"]
+      },
+      {
+        "id": "m-cs101-week3",
+        "title": "Week 3: Sorting",
+        "order": 2,
+        "materialIds": ["mat-cs101-sorting", "mat-cs101-a1"]
+      },
+      {
+        "id": "m-cs101-week6",
+        "title": "Week 6: Graphs",
+        "order": 3,
+        "materialIds": ["mat-cs101-graphs"]
+      }
+    ]
+  },
+  {
+    "id": "db201",
+    "code": "DB201",
+    "title": "Introduction to Databases",
+    "teacherId": "u-maya",
+    "modules": [
+      {
+        "id": "m-db201-intro",
+        "title": "Introduction",
+        "order": 1,
+        "materialIds": ["mat-db201-syllabus"]
+      },
+      {
+        "id": "m-db201-sql",
+        "title": "SQL",
+        "order": 2,
+        "materialIds": ["mat-db201-sql", "mat-db201-lab"]
+      },
+      {
+        "id": "m-db201-design",
+        "title": "Design & Normalisation",
+        "order": 3,
+        "materialIds": ["mat-db201-er", "mat-db201-norm"]
+      }
+    ]
+  }
+]

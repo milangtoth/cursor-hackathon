@@ -1,0 +1,101 @@
+[
+  {
+    "id": "mat-cs101-syllabus",
+    "courseId": "cs101",
+    "moduleId": "m-cs101-week1",
+    "kind": "pdf",
+    "title": "Course syllabus",
+    "fileName": "cs101-syllabus.pdf",
+    "pageCount": 2,
+    "uploadedAt": "2026-09-01T08:00:00.000Z",
+    "published": true
+  },
+  {
+    "id": "mat-cs101-sorting",
+    "courseId": "cs101",
+    "moduleId": "m-cs101-week3",
+    "kind": "pdf",
+    "title": "Lecture: Sorting algorithms",
+    "fileName": "cs101-sorting.pdf",
+    "pageCount": 2,
+    "uploadedAt": "2026-09-08T08:00:00.000Z",
+    "published": true
+  },
+  {
+    "id": "mat-cs101-a1",
+    "courseId": "cs101",
+    "moduleId": "m-cs101-week3",
+    "kind": "assignment",
+    "title": "Assignment 1: Sorting visualiser",
+    "fileName": "cs101-assignment-1.pdf",
+    "pageCount": 2,
+    "uploadedAt": "2026-09-08T08:30:00.000Z",
+    "published": true
+  },
+  {
+    "id": "mat-cs101-graphs",
+    "courseId": "cs101",
+    "moduleId": "m-cs101-week6",
+    "kind": "pdf",
+    "title": "Lecture: Graphs",
+    "fileName": "cs101-graphs.pdf",
+    "pageCount": 2,
+    "uploadedAt": "2026-09-15T08:00:00.000Z",
+    "published": true
+  },
+  {
+    "id": "mat-db201-syllabus",
+    "courseId": "db201",
+    "moduleId": "m-db201-intro",
+    "kind": "pdf",
+    "title": "Course syllabus",
+    "fileName": "db201-syllabus.pdf",
+    "pageCount": 2,
+    "uploadedAt": "2026-09-01T08:00:00.000Z",
+    "published": true
+  },
+  {
+    "id": "mat-db201-sql",
+    "courseId": "db201",
+    "moduleId": "m-db201-sql",
+    "kind": "pdf",
+    "title": "Lecture: Relational algebra and SQL",
+    "fileName": "db201-sql.pdf",
+    "pageCount": 2,
+    "uploadedAt": "2026-09-08T08:00:00.000Z",
+    "published": true
+  },
+  {
+    "id": "mat-db201-lab",
+    "courseId": "db201",
+    "moduleId": "m-db201-sql",
+    "kind": "assignment",
+    "title": "Lab 3: Writing queries",
+    "fileName": "db201-lab-queries.pdf",
+    "pageCount": 2,
+    "uploadedAt": "2026-09-10T08:00:00.000Z",
+    "published": true
+  },
+  {
+    "id": "mat-db201-er",
+    "courseId": "db201",
+    "moduleId": "m-db201-design",
+    "kind": "assignment",
+    "title": "Assignment 1: ER modelling",
+    "fileName": "db201-assignment-er.pdf",
+    "pageCount": 2,
+    "uploadedAt": "2026-09-12T08:00:00.000Z",
+    "published": true
+  },
+  {
+    "id": "mat-db201-norm",
+    "courseId": "db201",
+    "moduleId": "m-db201-design",
+    "kind": "pdf",
+    "title": "Week 6 lecture notes: Normalisation",
+    "fileName": "db201-week6-normalisation.pdf",
+    "pageCount": 2,
+    "uploadedAt": "2026-09-15T08:00:00.000Z",
+    "published": true
+  }
+]
