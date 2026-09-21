@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CourseCard } from "@/components/course-card";
+import { materialPath } from "@/components/course-modules";
 import { formatDueAt } from "@/components/due-date";
 import { canViewDeadline, requireDemoUser } from "@/components/demo-session";
 import { store } from "@/lib/store";
@@ -47,7 +48,9 @@ export default async function HomePage() {
               const course = store.course(deadline.courseId);
               const href =
                 "materialId" in deadline.source
-                  ? `/courses/${deadline.courseId}/${deadline.source.materialId}`
+                  ? materialPath(deadline.courseId, deadline.source.materialId, {
+                      page: deadline.source.page,
+                    })
                   : `/courses/${deadline.courseId}`;
               return (
                 <li key={deadline.id}>

@@ -217,3 +217,7 @@ export function newId() {
 export function publicPdfPath(fileName: string) {
   return `/content/${fileName}`;
 }
+
+export function publicPdfExists(fileName: string) {
+  return existsSync(join(process.cwd(), "public", "content", fileName));
+}

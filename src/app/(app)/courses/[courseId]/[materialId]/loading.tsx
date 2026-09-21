@@ -11,6 +11,8 @@ export default function MaterialLoading() {
         </div>
         <Skeleton className="h-5 w-16" />
       </div>
+      <Skeleton className="h-28 w-full rounded-xl" />
+      <Skeleton className="h-8 w-36" />
       <Skeleton className="min-h-72 w-full rounded-xl" />
     </div>
   );
