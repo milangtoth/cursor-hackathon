@@ -1,1 +1,234 @@
-[]
+[
+  {
+    "id": "4257e141-948a-4c92-8853-df2aea3a12ae",
+    "userId": "u-alex",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T13:27:39.442Z",
+    "citationCount": 1
+  },
+  {
+    "id": "d1315717-6a9d-4647-b4a1-96620fb2eee4",
+    "userId": "u-alex",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T13:27:46.347Z",
+    "citationCount": 2
+  },
+  {
+    "id": "f4e7d4c1-4d02-444b-98df-bab9ad13b3de",
+    "userId": "u-alex",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T13:29:59.216Z",
+    "citationCount": 2
+  },
+  {
+    "id": "d1333b9a-9ad6-4a7c-a8bb-8147dca09544",
+    "userId": "u-alex",
+    "question": "When is the capstone report due?",
+    "askedAt": "2026-09-21T13:32:24.437Z",
+    "citationCount": 1
+  },
+  {
+    "id": "f34033af-b85d-47ad-9e49-4ebd939cfdae",
+    "userId": "u-alex",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T13:34:15.119Z",
+    "citationCount": 2
+  },
+  {
+    "id": "c6d0a3ae-7c8b-4358-bfcf-b5141385522d",
+    "userId": "u-maya",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T13:34:26.178Z",
+    "citationCount": 2
+  },
+  {
+    "id": "4ff36376-12ec-420b-928b-193705f69abe",
+    "userId": "u-maya",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T13:34:28.645Z",
+    "citationCount": 2
+  },
+  {
+    "id": "5db3d5b1-1be5-4cda-bdfe-b6c136eeed5d",
+    "userId": "u-alex",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T13:34:36.450Z",
+    "citationCount": 2
+  },
+  {
+    "id": "098aeae3-74f5-4921-98c6-369b3c3df36a",
+    "userId": "u-alex",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T13:34:39.295Z",
+    "citationCount": 1
+  },
+  {
+    "id": "470126fe-8cd7-4e43-90f4-2920c9d9c91d",
+    "userId": "u-alex",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T13:34:44.608Z",
+    "citationCount": 2
+  },
+  {
+    "id": "516917bf-484d-45c2-81ca-64855f1ef527",
+    "userId": "u-alex",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T13:34:48.501Z",
+    "citationCount": 2
+  },
+  {
+    "id": "7203e8d1-0b68-4a19-9d4c-f028bb1f3074",
+    "userId": "u-alex",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T13:45:35.370Z",
+    "citationCount": 2
+  },
+  {
+    "id": "b5be8856-7803-49b7-9d71-d0eaf5d1a22d",
+    "userId": "u-alex",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T13:45:42.127Z",
+    "citationCount": 1
+  },
+  {
+    "id": "6875cd58-a74f-4091-b6d6-fc5955298987",
+    "userId": "u-alex",
+    "question": "SUmmarize course syllabus for databases",
+    "askedAt": "2026-09-21T13:46:05.678Z",
+    "citationCount": 2
+  },
+  {
+    "id": "fc40ea14-dac2-49a5-b939-80d05de31381",
+    "userId": "u-alex",
+    "question": "When is the capstone deadline?",
+    "askedAt": "2026-09-21T13:46:56.514Z",
+    "citationCount": 2
+  },
+  {
+    "id": "7011b3aa-80d3-4f41-b43c-d19592b895d9",
+    "userId": "u-alex",
+    "question": "Summarize data structures and algorithms",
+    "askedAt": "2026-09-21T13:47:57.962Z",
+    "citationCount": 4
+  },
+  {
+    "id": "cf0e25ea-45a7-418b-9257-ef3888a2927d",
+    "userId": "u-alex",
+    "question": "summarize the course materials for algorithms",
+    "askedAt": "2026-09-21T13:51:22.126Z",
+    "citationCount": 4
+  },
+  {
+    "id": "a47e73de-5793-415d-9505-f1102d47fe4d",
+    "userId": "u-alex",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T13:54:33.499Z",
+    "citationCount": 1
+  },
+  {
+    "id": "4dbc26c3-b3eb-4df4-8857-b360b50e8e85",
+    "userId": "u-alex",
+    "question": "What is 2*10?",
+    "askedAt": "2026-09-21T13:56:56.232Z",
+    "citationCount": 6
+  },
+  {
+    "id": "f3632a4b-a061-4121-941d-ce802a7acecb",
+    "userId": "u-alex",
+    "question": "=What is 2*10?",
+    "askedAt": "2026-09-21T13:57:02.988Z",
+    "citationCount": 6
+  },
+  {
+    "id": "881c2c78-7515-4eda-bf70-eb3d98581df7",
+    "userId": "u-alex",
+    "question": "Tell me everything about the databases course",
+    "askedAt": "2026-09-21T14:05:26.501Z",
+    "citationCount": 4
+  },
+  {
+    "id": "6a373846-3517-48f1-a344-d2a7a99eb8f6",
+    "userId": "u-alex",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T14:07:58.358Z",
+    "citationCount": 1
+  },
+  {
+    "id": "1e570ff1-1c66-49df-81be-9cd5ebff06bf",
+    "userId": "u-alex",
+    "question": "What is the weight of each DB201 assessment?",
+    "askedAt": "2026-09-21T14:08:09.012Z",
+    "citationCount": 1
+  },
+  {
+    "id": "ad349ec7-6206-4d98-8f81-1d14dcd5e0d1",
+    "userId": "u-alex",
+    "question": "test",
+    "askedAt": "2026-09-21T14:13:53.088Z",
+    "citationCount": 3
+  },
+  {
+    "id": "627f182b-d206-4e5f-8ff7-d62ab91b1bdc",
+    "userId": "u-alex",
+    "courseId": "db201",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T14:17:03.035Z",
+    "citationCount": 1
+  },
+  {
+    "id": "81871218-7b06-4c70-a567-4f2f15fe6002",
+    "userId": "u-alex",
+    "courseId": "db201",
+    "question": "How much is that assignment worth?",
+    "askedAt": "2026-09-21T14:17:16.044Z",
+    "citationCount": 1
+  },
+  {
+    "id": "a22ab49e-af6a-4dd7-bfcd-4f97bbecb802",
+    "userId": "u-alex",
+    "courseId": "db201",
+    "question": "When is my deadline for Databases?",
+    "askedAt": "2026-09-21T14:18:03.870Z",
+    "citationCount": 1
+  },
+  {
+    "id": "300410f9-f608-4968-956e-d7c5fbafa440",
+    "userId": "u-alex",
+    "courseId": "db201",
+    "question": "And what do I have to do for the assignment?",
+    "askedAt": "2026-09-21T14:18:26.074Z",
+    "citationCount": 2
+  },
+  {
+    "id": "4e8cb68b-398c-403c-8285-cc91a9635bd6",
+    "userId": "u-alex",
+    "courseId": "cs101",
+    "question": "What is Assignment 1 in Algorithms?",
+    "askedAt": "2026-09-21T14:28:28.708Z",
+    "citationCount": 3
+  },
+  {
+    "id": "3dee9e94-55d7-43c4-8955-696df2cbe853",
+    "userId": "u-alex",
+    "courseId": "pr12",
+    "question": "Summarize this topic from my materials: calculus course",
+    "askedAt": "2026-09-21T15:23:28.681Z",
+    "citationCount": 6
+  },
+  {
+    "id": "2025775b-7ef8-430e-b299-5a60d9a3830a",
+    "userId": "u-alex",
+    "courseId": "pr12",
+    "question": "What about week 2, 5 and 6?",
+    "askedAt": "2026-09-21T15:24:01.566Z",
+    "citationCount": 5
+  },
+  {
+    "id": "b12177bf-5647-4a57-a103-47375f59a501",
+    "userId": "u-alex",
+    "courseId": "pr12",
+    "question": "Summarize this topic from my materials: Summarize the full calculus course",
+    "askedAt": "2026-09-21T15:34:22.420Z",
+    "citationCount": 8
+  }
+]

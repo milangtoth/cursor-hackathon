@@ -18,10 +18,16 @@ const fontMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ModernLMS",
   description: "A fast LMS with an AI layer that acts on course material.",
+  appleWebApp: {
+    capable: true,
+    title: "ModernLMS",
+    statusBarStyle: "default",
+  },
 };
 
 export const viewport: Viewport = {
   colorScheme: "light dark",
+  themeColor: "#b8ff1a",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
