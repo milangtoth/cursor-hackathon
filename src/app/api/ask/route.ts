@@ -131,10 +131,15 @@ export async function POST(req: Request) {
               .join("\n")}\n\n`;
 
       const generated = await generateJson({
-        prompt: `You answer a student using ONLY the numbered excerpts and the deadline list.
+        prompt: `You answer a student using ONLY the numbered excerpts. The deadline list is extra context for date questions only.
 Cite only supplied chunk ids in citationIds. Do not invent ids.
 Keep the answer to 4 sentences or fewer.
-If the excerpts and deadlines do not contain the answer, say you could not find it in the materials.
+
+If they ask to summarize or overview a course or document, write that overview from the excerpts. Do not refuse because no excerpt is labelled "summary". Mention deadlines only if they asked when something is due, or in one short sentence as part of a syllabus overview.
+
+Use the deadline list ONLY for when/due/exam/date questions. Ignore it for summarize/explain questions.
+
+If the excerpts truly have nothing on the topic, say you could not find it in the materials.
 ${thread}Deadline list:
 ${formatDeadlines(deadlines)}
 
