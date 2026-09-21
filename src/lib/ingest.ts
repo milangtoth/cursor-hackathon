@@ -140,7 +140,8 @@ export async function ingestPdf(buffer: Buffer | Uint8Array, meta: IngestMeta): 
   if (meta.extractDeadlines !== false) {
     try {
       deadlines = await extractDeadlinesFromPages(pageTexts, meta.courseId, materialId);
-    } catch {
+    } catch (err) {
+      console.warn(`ingest: deadlines failed for ${meta.title}:`, err instanceof Error ? err.message : err);
       deadlines = [];
     }
   }
@@ -148,7 +149,8 @@ export async function ingestPdf(buffer: Buffer | Uint8Array, meta: IngestMeta): 
   if (meta.extractSummary !== false) {
     try {
       summary = await extractSummary(pageTexts, meta.title);
-    } catch {
+    } catch (err) {
+      console.warn(`ingest: summary failed for ${meta.title}:`, err instanceof Error ? err.message : err);
       summary = null;
     }
   }

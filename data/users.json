@@ -3,18 +3,27 @@
     "id": "u-alex",
     "name": "Alex Chen",
     "role": "student",
-    "courseIds": ["cs101", "db201"]
+    "courseIds": [
+      "cs101",
+      "db201"
+    ]
   },
   {
     "id": "u-maya",
     "name": "Dr. Maya Lindqvist",
     "role": "teacher",
-    "courseIds": ["cs101", "db201"]
+    "courseIds": [
+      "cs101",
+      "db201"
+    ]
   },
   {
     "id": "u-sam",
     "name": "Sam Okonkwo",
     "role": "admin",
-    "courseIds": ["cs101", "db201"]
+    "courseIds": [
+      "cs101",
+      "db201"
+    ]
   }
 ]

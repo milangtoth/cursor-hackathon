@@ -1,27 +1,27 @@
-import { GoogleGenAI, Type, type Schema } from "@google/genai";
+import OpenAI from "openai";
 import { z } from "zod";
 
-const EMBED_MODEL = "gemini-embedding-001";
 const EMBED_DIM = 768;
-const EMBED_BATCH = 20;
-const FLASH_PRIMARY = "gemini-3.6-flash";
-const FLASH_FALLBACK = "gemini-2.5-flash";
+const GENERATE_MODELS = ["deepseek-flash", "deepseek-chat", "deepseek-v4-pro"] as const;
 
-let cachedClient: GoogleGenAI | null = null;
+let cachedClient: OpenAI | null = null;
 let resolvedFlash: string | null = null;
 
 function apiKey() {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) throw new Error("GEMINI_API_KEY is not set");
+  const key = process.env.DEEPSEEK_API_KEY;
+  if (!key) throw new Error("DEEPSEEK_API_KEY is not set");
   return key;
 }
 
 function client() {
-  return (cachedClient ??= new GoogleGenAI({ apiKey: apiKey() }));
+  return (cachedClient ??= new OpenAI({
+    apiKey: apiKey(),
+    baseURL: "https://api.deepseek.com",
+  }));
 }
 
 export function flashModelName() {
-  return resolvedFlash ?? FLASH_PRIMARY;
+  return resolvedFlash ?? GENERATE_MODELS[0];
 }
 
 export function embedDim() {
@@ -36,39 +36,65 @@ export function normalizeVec(values: number[]): number[] {
   return values.map((v) => v / mag);
 }
 
+function errMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
+
+function isNotFound(err: unknown): boolean {
+  const msg = errMessage(err);
+  return msg.includes("404") || msg.includes("NOT_FOUND") || msg.includes("Model Not Exist");
+}
+
+function isRetryable(err: unknown): boolean {
+  const msg = errMessage(err);
+  return (
+    msg.includes("503") ||
+    msg.includes("429") ||
+    msg.includes("UNAVAILABLE") ||
+    msg.includes("rate limit") ||
+    msg.includes("overloaded")
+  );
+}
+
+function hash32(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function addFeature(vec: Float64Array, feat: string, weight: number) {
+  const h = hash32(feat);
+  const sign = h & 1 ? 1 : -1;
+  vec[h % EMBED_DIM] += sign * weight;
+}
+
 export type EmbedTask = "RETRIEVAL_DOCUMENT" | "RETRIEVAL_QUERY" | "SEMANTIC_SIMILARITY";
+
+function embedOne(text: string, taskType: EmbedTask): number[] {
+  const vec = new Float64Array(EMBED_DIM);
+  const prefixed =
+    taskType === "RETRIEVAL_QUERY" ? `query ${text}` : `passage ${text}`;
+  const tokens = prefixed.toLowerCase().match(/[a-z0-9]{2,}/g) ?? [];
+  for (const tok of tokens) {
+    addFeature(vec, tok, 1);
+    if (tok.length >= 3) {
+      for (let i = 0; i <= tok.length - 3; i++) addFeature(vec, tok.slice(i, i + 3), 0.3);
+    }
+  }
+  return normalizeVec(Array.from(vec));
+}
 
 export async function embedTexts(
   texts: string[],
   taskType: EmbedTask = "RETRIEVAL_DOCUMENT"
 ): Promise<number[][]> {
-  if (texts.length === 0) return [];
-  const out: number[][] = [];
-  const ai = client();
-  for (let i = 0; i < texts.length; i += EMBED_BATCH) {
-    const batch = texts.slice(i, i + EMBED_BATCH);
-    const res = await ai.models.embedContent({
-      model: EMBED_MODEL,
-      contents: batch,
-      config: {
-        outputDimensionality: EMBED_DIM,
-        taskType,
-      },
-    });
-    const embeddings = res.embeddings ?? [];
-    if (embeddings.length !== batch.length) {
-      throw new Error(`embed expected ${batch.length} vectors, got ${embeddings.length}`);
-    }
-    for (const emb of embeddings) {
-      const values = emb.values;
-      if (!values || values.length !== EMBED_DIM) {
-        throw new Error(`embed dim ${values?.length ?? 0}, expected ${EMBED_DIM}`);
-      }
-      out.push(normalizeVec(values));
-    }
-  }
-  return out;
+  return texts.map((t) => embedOne(t, taskType));
 }
+
+export type ResponseSchema = Record<string, unknown>;
 
 export const deadlineListSchema = z.object({
   deadlines: z.array(
@@ -80,17 +106,17 @@ export const deadlineListSchema = z.object({
   ),
 });
 
-export const deadlineListGeminiSchema: Schema = {
-  type: Type.OBJECT,
+export const deadlineListGeminiSchema: ResponseSchema = {
+  type: "object",
   properties: {
     deadlines: {
-      type: Type.ARRAY,
+      type: "array",
       items: {
-        type: Type.OBJECT,
+        type: "object",
         properties: {
-          title: { type: Type.STRING },
-          dueAt: { type: Type.STRING, description: "ISO 8601 datetime" },
-          page: { type: Type.INTEGER },
+          title: { type: "string" },
+          dueAt: { type: "string", description: "ISO 8601 datetime" },
+          page: { type: "integer" },
         },
         required: ["title", "dueAt", "page"],
       },
@@ -103,10 +129,10 @@ export const summarySchema = z.object({
   summary: z.string(),
 });
 
-export const summaryGeminiSchema: Schema = {
-  type: Type.OBJECT,
+export const summaryGeminiSchema: ResponseSchema = {
+  type: "object",
   properties: {
-    summary: { type: Type.STRING, description: "2-4 sentence summary of the material" },
+    summary: { type: "string", description: "2-4 sentence summary of the material" },
   },
   required: ["summary"],
 };
@@ -116,13 +142,13 @@ export const askOutputSchema = z.object({
   citationIds: z.array(z.string()),
 });
 
-export const askOutputGeminiSchema: Schema = {
-  type: Type.OBJECT,
+export const askOutputGeminiSchema: ResponseSchema = {
+  type: "object",
   properties: {
-    answer: { type: Type.STRING },
+    answer: { type: "string" },
     citationIds: {
-      type: Type.ARRAY,
-      items: { type: Type.STRING, description: "chunk id from the supplied excerpts" },
+      type: "array",
+      items: { type: "string", description: "chunk id from the supplied excerpts" },
     },
   },
   required: ["answer", "citationIds"],
@@ -131,39 +157,58 @@ export const askOutputGeminiSchema: Schema = {
 export type GenerateJsonArgs<T> = {
   prompt: string;
   schema: z.ZodType<T>;
-  responseSchema: Schema;
+  responseSchema: ResponseSchema;
   temperature?: number;
   maxOutputTokens?: number;
 };
 
+function parseJsonText(text: string): unknown {
+  const trimmed = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+  return JSON.parse(trimmed);
+}
+
+function generateModelOrder(): string[] {
+  if (!resolvedFlash) return [...GENERATE_MODELS];
+  return [resolvedFlash, ...GENERATE_MODELS.filter((m) => m !== resolvedFlash)];
+}
+
 async function generateWithModel(model: string, args: Omit<GenerateJsonArgs<unknown>, "schema">) {
-  const config: {
-    temperature: number;
-    maxOutputTokens: number;
-    responseMimeType: string;
-    responseSchema: Schema;
-  } = {
-    temperature: args.temperature ?? 0.2,
-    maxOutputTokens: args.maxOutputTokens ?? 1024,
-    responseMimeType: "application/json",
-    responseSchema: args.responseSchema,
-  };
-  const res = await client().models.generateContent({
+  const res = await client().chat.completions.create({
     model,
-    contents: args.prompt,
-    config,
-  });
-  const text = res.text?.trim();
+    temperature: args.temperature ?? 0.2,
+    max_tokens: args.maxOutputTokens ?? 1024,
+    response_format: { type: "json_object" },
+    messages: [
+      {
+        role: "system",
+        content: `You output json only. No markdown. Match this json shape:\n${JSON.stringify(args.responseSchema)}`,
+      },
+      { role: "user", content: args.prompt },
+    ],
+    thinking: { type: "disabled" },
+  } as OpenAI.Chat.ChatCompletionCreateParamsNonStreaming);
+  const text = res.choices[0]?.message?.content?.trim();
   if (!text) {
-    const finish = res.candidates?.[0]?.finishReason;
-    throw new Error(`empty model response from ${model}${finish ? ` (${finish})` : ""}`);
+    throw new Error(`empty model response from ${model} (${res.choices[0]?.finish_reason ?? "no content"})`);
   }
   return text;
 }
 
-function parseJsonText(text: string): unknown {
-  const trimmed = text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
-  return JSON.parse(trimmed);
+async function generateWithFallback(args: Omit<GenerateJsonArgs<unknown>, "schema">) {
+  let lastErr: unknown;
+  for (const model of generateModelOrder()) {
+    try {
+      const text = await generateWithModel(model, args);
+      resolvedFlash = model;
+      return text;
+    } catch (err) {
+      lastErr = err;
+      if (resolvedFlash === model) resolvedFlash = null;
+      if (isNotFound(err)) continue;
+      throw err;
+    }
+  }
+  throw lastErr;
 }
 
 export async function generateJson<T>(args: GenerateJsonArgs<T>): Promise<T> {
@@ -177,30 +222,12 @@ export async function generateJson<T>(args: GenerateJsonArgs<T>): Promise<T> {
   let lastErr: unknown;
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      let text: string;
-      if (resolvedFlash) {
-        text = await generateWithModel(resolvedFlash, callArgs);
-      } else {
-        try {
-          text = await generateWithModel(FLASH_PRIMARY, callArgs);
-          resolvedFlash = FLASH_PRIMARY;
-        } catch (primaryErr) {
-          try {
-            text = await generateWithModel(FLASH_FALLBACK, callArgs);
-            resolvedFlash = FLASH_FALLBACK;
-          } catch {
-            throw primaryErr;
-          }
-        }
-      }
-      const parsed = parseJsonText(text);
-      return args.schema.parse(parsed);
+      const text = await generateWithFallback(callArgs);
+      return args.schema.parse(parseJsonText(text));
     } catch (err) {
       lastErr = err;
-      const msg = err instanceof Error ? err.message : String(err);
-      if (!msg.includes("503") && !msg.includes("UNAVAILABLE") && !msg.includes("high demand")) {
-        throw err;
-      }
+      if (!isRetryable(err) || attempt === 2) throw err;
+      resolvedFlash = null;
       await new Promise((r) => setTimeout(r, 1500 * (attempt + 1)));
     }
   }

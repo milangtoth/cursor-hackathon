@@ -54,9 +54,7 @@
         "order": 2,
         "materialIds": [
           "mat-db201-sql",
-          "mat-db201-lab",
-          "72548c75-a90a-4ba2-b630-a27ada862682",
-          "1b867dad-a247-43d4-93a4-3739f946dd40"
+          "mat-db201-lab"
         ]
       },
       {

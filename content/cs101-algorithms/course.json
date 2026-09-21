@@ -1,0 +1,59 @@
+{
+  "id": "cs101",
+  "code": "CS101",
+  "title": "Algorithms & Data Structures",
+  "teacherId": "u-maya",
+  "heroImage": "/heroes/cs101.png",
+  "modules": [
+    {
+      "id": "m-cs101-week1",
+      "title": "Week 1: Foundations",
+      "order": 1,
+      "materials": [
+        {
+          "id": "mat-cs101-syllabus",
+          "file": "01-syllabus.md",
+          "fileName": "cs101-syllabus.pdf",
+          "title": "Course syllabus",
+          "kind": "pdf"
+        }
+      ]
+    },
+    {
+      "id": "m-cs101-week3",
+      "title": "Week 3: Sorting",
+      "order": 2,
+      "materials": [
+        {
+          "id": "mat-cs101-sorting",
+          "file": "02-sorting.md",
+          "fileName": "cs101-sorting.pdf",
+          "title": "Lecture: Sorting algorithms",
+          "kind": "pdf",
+          "published": false
+        },
+        {
+          "id": "mat-cs101-a1",
+          "file": "03-assignment-1.md",
+          "fileName": "cs101-assignment-1.pdf",
+          "title": "Assignment 1: Sorting visualiser",
+          "kind": "assignment"
+        }
+      ]
+    },
+    {
+      "id": "m-cs101-week6",
+      "title": "Week 6: Graphs",
+      "order": 3,
+      "materials": [
+        {
+          "id": "mat-cs101-graphs",
+          "file": "04-graphs.md",
+          "fileName": "cs101-graphs.pdf",
+          "title": "Lecture: Graphs",
+          "kind": "pdf"
+        }
+      ]
+    }
+  ]
+}

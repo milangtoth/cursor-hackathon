@@ -7,7 +7,7 @@
     "title": "Course syllabus",
     "fileName": "cs101-syllabus.pdf",
     "pageCount": 2,
-    "uploadedAt": "2026-09-01T08:00:00.000Z",
+    "uploadedAt": "2026-09-21T13:16:10.396Z",
     "published": true
   },
   {
@@ -18,7 +18,7 @@
     "title": "Lecture: Sorting algorithms",
     "fileName": "cs101-sorting.pdf",
     "pageCount": 2,
-    "uploadedAt": "2026-09-08T08:00:00.000Z",
+    "uploadedAt": "2026-09-21T13:16:10.411Z",
     "published": false
   },
   {
@@ -28,8 +28,8 @@
     "kind": "assignment",
     "title": "Assignment 1: Sorting visualiser",
     "fileName": "cs101-assignment-1.pdf",
-    "pageCount": 2,
-    "uploadedAt": "2026-09-08T08:30:00.000Z",
+    "pageCount": 1,
+    "uploadedAt": "2026-09-21T13:16:10.419Z",
     "published": true
   },
   {
@@ -39,8 +39,8 @@
     "kind": "pdf",
     "title": "Lecture: Graphs",
     "fileName": "cs101-graphs.pdf",
-    "pageCount": 2,
-    "uploadedAt": "2026-09-15T08:00:00.000Z",
+    "pageCount": 1,
+    "uploadedAt": "2026-09-21T13:16:10.428Z",
     "published": true
   },
   {
@@ -51,7 +51,7 @@
     "title": "Course syllabus",
     "fileName": "db201-syllabus.pdf",
     "pageCount": 2,
-    "uploadedAt": "2026-09-01T08:00:00.000Z",
+    "uploadedAt": "2026-09-21T13:16:10.437Z",
     "published": true
   },
   {
@@ -62,7 +62,7 @@
     "title": "Lecture: Relational algebra and SQL",
     "fileName": "db201-sql.pdf",
     "pageCount": 2,
-    "uploadedAt": "2026-09-08T08:00:00.000Z",
+    "uploadedAt": "2026-09-21T13:16:10.461Z",
     "published": true
   },
   {
@@ -72,8 +72,8 @@
     "kind": "assignment",
     "title": "Lab 3: Writing queries",
     "fileName": "db201-lab-queries.pdf",
-    "pageCount": 2,
-    "uploadedAt": "2026-09-10T08:00:00.000Z",
+    "pageCount": 1,
+    "uploadedAt": "2026-09-21T13:16:10.469Z",
     "published": true
   },
   {
@@ -83,8 +83,8 @@
     "kind": "assignment",
     "title": "Assignment 1: ER modelling",
     "fileName": "db201-assignment-er.pdf",
-    "pageCount": 2,
-    "uploadedAt": "2026-09-12T08:00:00.000Z",
+    "pageCount": 1,
+    "uploadedAt": "2026-09-21T13:16:10.475Z",
     "published": true
   },
   {
@@ -94,30 +94,8 @@
     "kind": "pdf",
     "title": "Week 6 lecture notes: Normalisation",
     "fileName": "db201-week6-normalisation.pdf",
-    "pageCount": 2,
-    "uploadedAt": "2026-09-15T08:00:00.000Z",
-    "published": true
-  },
-  {
-    "id": "72548c75-a90a-4ba2-b630-a27ada862682",
-    "courseId": "db201",
-    "moduleId": "m-db201-sql",
-    "kind": "pdf",
-    "title": "Capstone brief (demo upload)",
-    "fileName": "1789995698658-demo-capstone-brief.pdf",
     "pageCount": 1,
-    "uploadedAt": "2026-09-21T13:01:38.696Z",
-    "published": true
-  },
-  {
-    "id": "1b867dad-a247-43d4-93a4-3739f946dd40",
-    "courseId": "db201",
-    "moduleId": "m-db201-sql",
-    "kind": "pdf",
-    "title": "Capstone brief (demo upload)",
-    "fileName": "1789995736623-demo-capstone-brief.pdf",
-    "pageCount": 1,
-    "uploadedAt": "2026-09-21T13:02:16.628Z",
+    "uploadedAt": "2026-09-21T13:16:10.484Z",
     "published": true
   }
 ]

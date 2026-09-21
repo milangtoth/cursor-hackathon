@@ -1,22 +1,21 @@
 import { loadEnv } from "./load-env";
 import { z } from "zod";
-import { Type } from "@google/genai";
 
 loadEnv();
 
 const pingSchema = z.object({ ok: z.boolean(), echo: z.string() });
-const pingGemini = {
-  type: Type.OBJECT,
+const pingSchemaHint = {
+  type: "object",
   properties: {
-    ok: { type: Type.BOOLEAN },
-    echo: { type: Type.STRING },
+    ok: { type: "boolean" },
+    echo: { type: "string" },
   },
   required: ["ok", "echo"],
 };
 
 async function main() {
-  if (!process.env.GEMINI_API_KEY) {
-    console.error("smoke fail: GEMINI_API_KEY missing (cwd=" + process.cwd() + ")");
+  if (!process.env.DEEPSEEK_API_KEY) {
+    console.error("smoke fail: DEEPSEEK_API_KEY missing (cwd=" + process.cwd() + ")");
     process.exit(1);
   }
 
@@ -29,9 +28,9 @@ async function main() {
   }
 
   const ping = await generateJson({
-    prompt: 'Return JSON with ok=true and echo="pong".',
+    prompt: 'Return json with ok=true and echo="pong".',
     schema: pingSchema,
-    responseSchema: pingGemini,
+    responseSchema: pingSchemaHint,
     temperature: 0,
     maxOutputTokens: 256,
   });

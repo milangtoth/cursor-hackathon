@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["unpdf", "@google/genai"],
+  serverExternalPackages: ["unpdf", "openai"],
 };
 
 export default nextConfig;

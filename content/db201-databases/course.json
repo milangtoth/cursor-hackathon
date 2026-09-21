@@ -1,0 +1,67 @@
+{
+  "id": "db201",
+  "code": "DB201",
+  "title": "Introduction to Databases",
+  "teacherId": "u-maya",
+  "heroImage": "/heroes/db201.png",
+  "modules": [
+    {
+      "id": "m-db201-intro",
+      "title": "Introduction",
+      "order": 1,
+      "materials": [
+        {
+          "id": "mat-db201-syllabus",
+          "file": "01-syllabus.md",
+          "fileName": "db201-syllabus.pdf",
+          "title": "Course syllabus",
+          "kind": "pdf"
+        }
+      ]
+    },
+    {
+      "id": "m-db201-sql",
+      "title": "SQL",
+      "order": 2,
+      "materials": [
+        {
+          "id": "mat-db201-sql",
+          "file": "02-sql.md",
+          "fileName": "db201-sql.pdf",
+          "title": "Lecture: Relational algebra and SQL",
+          "kind": "pdf"
+        },
+        {
+          "id": "mat-db201-lab",
+          "file": "03-lab-queries.md",
+          "fileName": "db201-lab-queries.pdf",
+          "title": "Lab 3: Writing queries",
+          "kind": "assignment",
+          "skipDeadlineExtract": true,
+          "skipSummary": true
+        }
+      ]
+    },
+    {
+      "id": "m-db201-design",
+      "title": "Design & Normalisation",
+      "order": 3,
+      "materials": [
+        {
+          "id": "mat-db201-er",
+          "file": "04-assignment-er.md",
+          "fileName": "db201-assignment-er.pdf",
+          "title": "Assignment 1: ER modelling",
+          "kind": "assignment"
+        },
+        {
+          "id": "mat-db201-norm",
+          "file": "05-normalisation.md",
+          "fileName": "db201-week6-normalisation.pdf",
+          "title": "Week 6 lecture notes: Normalisation",
+          "kind": "pdf"
+        }
+      ]
+    }
+  ]
+}

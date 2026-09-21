@@ -97,8 +97,10 @@ export interface IngestResult {
 export interface SourceMaterial {
   id: string;
   file: string;
+  fileName: string;
   title: string;
   kind: "pdf" | "assignment";
+  published?: boolean;
   skipDeadlineExtract?: boolean;
   skipSummary?: boolean;
 }

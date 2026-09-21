@@ -23,11 +23,13 @@ general". Do not add abstractions for problems we do not have yet.
 - **`src/lib/store.ts` is the only file that touches `data/` or the filesystem for domain data.**
   Everything else goes through it. This is what makes the "swap in Postgres later" story true.
 - **`src/lib/gemini.ts` is the only file that calls the model API.** One place to swap providers.
+  Generation is DeepSeek (`openai` SDK, `baseURL: https://api.deepseek.com`). DeepSeek has no
+  embeddings endpoint; vectors are computed locally in that same file.
 - **PDF text extraction uses `unpdf` with `mergePages: false`.** Never `pdf-parse`. We need
   per-page text or citations are impossible.
-- **Use the `@google/genai` SDK.** `@google/generative-ai` is deprecated; do not install it.
+- **Do not install `@google/genai` or `@google/generative-ai`.** Gemini quota is exhausted.
 - **Embeddings are 768 dimensions and normalized at ingest time**, so similarity is a dot
-  product. Never re-embed stored chunks at query time.
+  product. Never re-embed stored chunks at query time. After changing the embedder, re-run seed.
 - **One ingest pipeline.** `src/lib/ingest.ts` is called by both `scripts/seed.ts` and
   `POST /api/materials`. Never duplicate parsing or chunking logic.
 - **`src/lib/types.ts` is a shared contract between two people.** Extend it, but never rename or
