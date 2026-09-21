@@ -38,9 +38,13 @@ export function CitationChip({
       <div className="flex items-start justify-between gap-2">
         <span className="flex min-w-0 items-center gap-1.5 text-sm font-medium">
           <FileText className="text-muted-foreground size-3.5 shrink-0" />
-          <span className="truncate">{citation.materialTitle}</span>
+          <span className="truncate underline underline-offset-2">
+            {citation.materialTitle}
+          </span>
         </span>
-        <Badge variant="outline">p. {citation.page}</Badge>
+        <Badge className="underline underline-offset-2" variant="outline">
+          p. {citation.page}
+        </Badge>
       </div>
       <p className="text-muted-foreground mt-1.5 line-clamp-2 text-xs leading-relaxed">
         {citation.snippet}

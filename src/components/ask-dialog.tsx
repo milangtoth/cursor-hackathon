@@ -1,9 +1,20 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Calculator, Search } from "lucide-react";
-import { AnswerCard } from "@/components/answer-card";
-import { CitationChip } from "@/components/citation-chip";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  BookOpen,
+  Calculator,
+  CalendarDays,
+  ExternalLink,
+  ListRestart,
+  Search,
+  Sparkles,
+  X,
+  type LucideIcon,
+} from "lucide-react";
+import { AnswerCard, containsDate } from "@/components/answer-card";
+import { CitationChip, citationHref } from "@/components/citation-chip";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,12 +26,63 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { formatCalc, tryCalc } from "@/lib/calc";
-import type { Citation } from "@/lib/types";
+import type { Citation, Course } from "@/lib/types";
 
 const SUGGESTIONS = [
   "When is my deadline for Databases?",
   "What is Assignment 1 in Algorithms?",
   "When is the DB201 midterm?",
+];
+const HISTORY_KEY = "modernlms-ask-history";
+
+type AskCommand = {
+  command: string;
+  label: string;
+  icon: LucideIcon;
+  tool?: AskTool;
+};
+
+type AskTool = "summarize" | "deadlines";
+
+const TOOL_CONFIG: Record<
+  AskTool,
+  { label: string; placeholder: string; icon: LucideIcon }
+> = {
+  summarize: {
+    label: "Summarize",
+    placeholder: "What should I summarize?",
+    icon: Sparkles,
+  },
+  deadlines: {
+    label: "Find deadlines",
+    placeholder: "Optionally narrow the deadlines…",
+    icon: CalendarDays,
+  },
+};
+
+const COMMANDS: AskCommand[] = [
+  {
+    command: "/course",
+    label: "Restrict answers to one course",
+    icon: BookOpen,
+  },
+  {
+    command: "/summarize",
+    label: "Prepare a course overview",
+    icon: Sparkles,
+    tool: "summarize",
+  },
+  {
+    command: "/deadlines",
+    label: "Find upcoming due dates",
+    icon: CalendarDays,
+    tool: "deadlines",
+  },
+  {
+    command: "/clear",
+    label: "Clear this conversation",
+    icon: ListRestart,
+  },
 ];
 
 function friendlyAskError(message: string) {
@@ -35,13 +97,20 @@ function friendlyAskError(message: string) {
 
 type AskEvent =
   | { type: "citations"; citations: Citation[] }
-  | { type: "answer"; answer: string; citations: Citation[] }
+  | {
+      type: "answer";
+      answer: string;
+      citations: Citation[];
+      followUps?: string[];
+    }
   | { type: "error"; error: string };
 
 type Turn = {
   question: string;
+  query: string;
   answer: string | null;
   citations: Citation[];
+  followUps: string[];
 };
 
 async function readAskEvents(
@@ -53,6 +122,7 @@ async function readAskEvents(
     const data = (await res.json()) as AskEvent | {
       answer?: string;
       citations?: Citation[];
+      followUps?: string[];
       error?: string;
     };
     if ("type" in data && data.type) {
@@ -68,6 +138,7 @@ async function readAskEvents(
       type: "answer",
       answer: data.answer ?? "",
       citations: data.citations ?? [],
+      followUps: data.followUps ?? [],
     });
     return;
   }
@@ -96,11 +167,22 @@ function patchLastTurn(turns: Turn[], patch: Partial<Turn>): Turn[] {
   return next;
 }
 
-export function AskDialog() {
+export function AskDialog({
+  courses,
+}: {
+  courses: Pick<Course, "id" | "code" | "title">[];
+}) {
+  const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState("");
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const [activeTool, setActiveTool] = useState<AskTool | null>(null);
   const [pending, setPending] = useState(false);
+  const [stage, setStage] = useState<"searching" | "generating" | null>(null);
   const [turns, setTurns] = useState<Turn[]>([]);
+  const [recentQuestions, setRecentQuestions] = useState<string[]>([]);
+  const [commandIndex, setCommandIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -110,8 +192,11 @@ export function AskDialog() {
     abortRef.current = null;
     setTurns([]);
     setDraft("");
+    setSelectedCourseId(null);
+    setActiveTool(null);
     setError(null);
     setPending(false);
+    setStage(null);
   }
 
   useEffect(() => {
@@ -119,21 +204,92 @@ export function AskDialog() {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         setOpen((value) => !value);
+      } else if (
+        open &&
+        (event.metaKey || event.ctrlKey) &&
+        event.shiftKey &&
+        event.key === "Backspace"
+      ) {
+        event.preventDefault();
+        resetThread();
       }
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [open]);
+
+  function loadRecentQuestions() {
+    const stored = window.localStorage.getItem(HISTORY_KEY);
+    if (!stored) return;
+    try {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed)) {
+        setRecentQuestions(
+          parsed.filter((item): item is string => typeof item === "string").slice(0, 5)
+        );
+      }
+    } catch {
+      window.localStorage.removeItem(HISTORY_KEY);
+    }
+  }
+
+  function applyRouteScope() {
+    if (selectedCourseId) return;
+    const routeCourseId = pathname.match(/^\/courses\/([^/]+)/)?.[1];
+    if (routeCourseId && courses.some((course) => course.id === routeCourseId)) {
+      setSelectedCourseId(routeCourseId);
+    }
+  }
 
   useEffect(() => {
     if (open && !pending) inputRef.current?.focus();
   }, [open, pending, turns.length]);
 
+  function rememberQuestion(question: string) {
+    setRecentQuestions((current) => {
+      const next = [question, ...current.filter((item) => item !== question)].slice(0, 5);
+      window.localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
+      return next;
+    });
+  }
+
+  function applyCommand(command: AskCommand) {
+    if (command.command === "/clear") {
+      resetThread();
+      return;
+    }
+    if (command.command === "/course") {
+      setDraft("/course");
+      setCommandIndex(0);
+      return;
+    }
+    if (command.tool) setActiveTool(command.tool);
+    setDraft("");
+    setCommandIndex(0);
+    inputRef.current?.focus();
+  }
+
   async function ask(nextQuestion: string) {
     const trimmed = nextQuestion.trim();
-    if (!trimmed) return;
+    if (!trimmed && !activeTool) return;
 
-    if (tryCalc(trimmed) != null) {
+    const tool = activeTool;
+    const toolConfig = tool ? TOOL_CONFIG[tool] : null;
+    const submittedQuestion =
+      tool === "summarize"
+        ? trimmed
+          ? `Summarize this topic from my materials: ${trimmed}`
+          : "Summarize the key points in my materials."
+        : tool === "deadlines"
+          ? trimmed
+            ? `Find deadlines in my materials related to: ${trimmed}`
+            : "What are my upcoming deadlines?"
+          : trimmed;
+    const displayedQuestion = toolConfig
+      ? `${toolConfig.label}${trimmed ? ` · ${trimmed}` : ""}`
+      : trimmed;
+
+    if (!tool && tryCalc(trimmed) != null) {
       abortRef.current?.abort();
       setDraft(trimmed);
       setPending(false);
@@ -148,21 +304,34 @@ export function AskDialog() {
     const history = turns
       .filter((turn) => turn.answer)
       .slice(-4)
-      .map((turn) => ({ question: turn.question, answer: turn.answer! }));
+      .map((turn) => ({ question: turn.query, answer: turn.answer! }));
 
     setDraft("");
+    setActiveTool(null);
     setPending(true);
+    setStage("searching");
     setError(null);
+    rememberQuestion(submittedQuestion);
     setTurns((prev) => [
       ...prev.filter((turn) => turn.answer != null),
-      { question: trimmed, answer: null, citations: [] },
+      {
+        question: displayedQuestion,
+        query: submittedQuestion,
+        answer: null,
+        citations: [],
+        followUps: [],
+      },
     ]);
 
     try {
       const res = await fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: trimmed, history }),
+        body: JSON.stringify({
+          question: submittedQuestion,
+          history,
+          courseId: selectedCourseId ?? undefined,
+        }),
         signal: ac.signal,
       });
 
@@ -173,17 +342,21 @@ export function AskDialog() {
 
       await readAskEvents(res, (event) => {
         if (event.type === "citations") {
+          setStage("generating");
           setTurns((prev) => patchLastTurn(prev, { citations: event.citations }));
         } else if (event.type === "answer") {
+          setStage(null);
           setTurns((prev) =>
             patchLastTurn(prev, {
               answer: event.answer,
+              followUps: event.followUps ?? [],
               citations: event.citations.length
                 ? event.citations
                 : prev[prev.length - 1]?.citations ?? [],
             })
           );
         } else if (event.type === "error") {
+          setStage(null);
           setError(event.error);
         }
       });
@@ -191,34 +364,179 @@ export function AskDialog() {
       if (err instanceof DOMException && err.name === "AbortError") return;
       setError(err instanceof Error ? err.message : "Ask failed");
     } finally {
-      if (abortRef.current === ac) setPending(false);
+      if (abortRef.current === ac) {
+        setPending(false);
+        setStage(null);
+      }
     }
   }
 
-  const calc = tryCalc(draft);
+  const calc = activeTool ? null : tryCalc(draft);
   const hasResults = pending || turns.length > 0;
   const followUp = turns.some((turn) => turn.answer);
+  const normalizedDraft = draft.trim().toLowerCase();
+  const courseCommandOpen = normalizedDraft === "/course";
+  const commandMenuOpen =
+    normalizedDraft.startsWith("/") && !courseCommandOpen;
+  const filteredCommands = commandMenuOpen
+    ? COMMANDS.filter((command) => command.command.startsWith(normalizedDraft))
+    : [];
+  const activeCommand =
+    filteredCommands[Math.min(commandIndex, filteredCommands.length - 1)];
+  const selectedCourse = courses.find(
+    (course) => course.id === selectedCourseId
+  );
+  const activeToolConfig = activeTool ? TOOL_CONFIG[activeTool] : null;
+  const ActiveToolIcon = activeToolConfig?.icon;
 
   const form = (
     <form
-      className="flex gap-2"
+      className="flex flex-col gap-2"
       onSubmit={(event) => {
         event.preventDefault();
+        if (courseCommandOpen) return;
+        if (commandMenuOpen && activeCommand) {
+          applyCommand(activeCommand);
+          return;
+        }
         void ask(draft);
       }}
     >
-      <Input
-        ref={inputRef}
-        value={draft}
-        onChange={(event) => setDraft(event.target.value)}
-        placeholder={
-          followUp ? "Ask a follow-up…" : "Ask, or type 12*8"
-        }
-        autoFocus
-      />
-      <Button type="submit" disabled={pending || !draft.trim()}>
-        {pending ? "Asking…" : followUp ? "Follow up" : "Ask"}
-      </Button>
+      {selectedCourse || activeToolConfig ? (
+        <div className="flex flex-wrap gap-1.5">
+          {selectedCourse ? (
+            <div className="bg-muted flex w-fit items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium">
+              <BookOpen className="size-3.5" />
+              Scoped to {selectedCourse.code}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                aria-label={`Remove ${selectedCourse.code} course scope`}
+                onClick={() => setSelectedCourseId(null)}
+              >
+                <X />
+              </Button>
+            </div>
+          ) : null}
+          {activeToolConfig && ActiveToolIcon ? (
+            <div className="bg-primary/15 flex w-fit items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium">
+              <ActiveToolIcon className="size-3.5" />
+              {activeToolConfig.label}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                aria-label={`Remove ${activeToolConfig.label} tool`}
+                onClick={() => setActiveTool(null)}
+              >
+                <X />
+              </Button>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+      <div className="flex gap-2">
+        <Input
+          ref={inputRef}
+          value={draft}
+          onChange={(event) => {
+            setDraft(event.target.value);
+            setCommandIndex(0);
+          }}
+          onKeyDown={(event) => {
+            if (!commandMenuOpen || filteredCommands.length === 0) return;
+            if (event.key === "ArrowDown") {
+              event.preventDefault();
+              setCommandIndex((index) => (index + 1) % filteredCommands.length);
+            } else if (event.key === "ArrowUp") {
+              event.preventDefault();
+              setCommandIndex(
+                (index) =>
+                  (index - 1 + filteredCommands.length) % filteredCommands.length
+              );
+            } else if (event.key === "Enter" && activeCommand) {
+              event.preventDefault();
+              applyCommand(activeCommand);
+            }
+          }}
+          placeholder={
+            activeToolConfig
+              ? activeToolConfig.placeholder
+              : followUp
+                ? "Ask a follow-up, or type /…"
+                : "Ask anything, or type /"
+          }
+          autoFocus
+        />
+        <Button
+          type="submit"
+          disabled={
+            pending ||
+            (!draft.trim() && !activeTool) ||
+            courseCommandOpen ||
+            (commandMenuOpen && filteredCommands.length === 0)
+          }
+        >
+          {pending ? "Asking…" : followUp ? "Follow up" : "Ask"}
+        </Button>
+      </div>
+      {commandMenuOpen && filteredCommands.length > 0 ? (
+        <div className="flex flex-col gap-1 rounded-lg border p-1.5">
+          <p className="text-muted-foreground px-2 py-1 text-xs font-medium">
+            Tools
+          </p>
+          {filteredCommands.map((command, index) => {
+            const Icon = command.icon;
+            return (
+              <Button
+                key={command.command}
+                type="button"
+                variant="ghost"
+                className={
+                  index === commandIndex
+                    ? "bg-muted h-auto justify-start px-2.5 py-2 text-left"
+                    : "h-auto justify-start px-2.5 py-2 text-left"
+                }
+                onClick={() => applyCommand(command)}
+              >
+                <Icon />
+                <span className="font-mono text-xs">{command.command}</span>
+                <span className="text-muted-foreground truncate">
+                  {command.label}
+                </span>
+              </Button>
+            );
+          })}
+        </div>
+      ) : null}
+      {courseCommandOpen ? (
+        <div className="flex flex-col gap-1 rounded-lg border p-1.5">
+          <p className="text-muted-foreground px-2 py-1 text-xs font-medium">
+            Choose a course
+          </p>
+          {courses.map((course) => (
+            <Button
+              key={course.id}
+              type="button"
+              variant="ghost"
+              className="h-auto justify-start px-2.5 py-2 text-left"
+              onClick={() => {
+                setSelectedCourseId(course.id);
+                setTurns([]);
+                setError(null);
+                setDraft("");
+                inputRef.current?.focus();
+              }}
+            >
+              <span className="font-semibold">{course.code}</span>
+              <span className="text-muted-foreground truncate">
+                {course.title}
+              </span>
+            </Button>
+          ))}
+        </div>
+      ) : null}
     </form>
   );
 
@@ -227,7 +545,12 @@ export function AskDialog() {
       open={open}
       onOpenChange={(next) => {
         setOpen(next);
-        if (!next) resetThread();
+        if (next) {
+          loadRecentQuestions();
+          applyRouteScope();
+        } else {
+          resetThread();
+        }
       }}
     >
       <DialogTrigger
@@ -249,7 +572,7 @@ export function AskDialog() {
         <DialogHeader>
           <DialogTitle>Ask your materials</DialogTitle>
           <DialogDescription>
-            Course answers with citations — or type 12*8 like Spotlight.
+            Search, calculate, or type / to use a tool.
           </DialogDescription>
         </DialogHeader>
         {calc != null ? (
@@ -271,6 +594,26 @@ export function AskDialog() {
         ) : !hasResults ? (
           <>
             {form}
+            {recentQuestions.length > 0 ? (
+              <div className="flex flex-col gap-2">
+                <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                  Recent
+                </p>
+                <div className="flex flex-col gap-1">
+                  {recentQuestions.map((question) => (
+                    <Button
+                      key={question}
+                      type="button"
+                      variant="ghost"
+                      className="h-auto justify-start px-2.5 py-1.5 text-left text-xs whitespace-normal"
+                      onClick={() => void ask(question)}
+                    >
+                      {question}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
             <div className="flex flex-col gap-2">
               <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
                 Try asking
@@ -300,6 +643,17 @@ export function AskDialog() {
                     answer={turn.answer}
                     pending={pending && index === turns.length - 1}
                   />
+                  {pending && index === turns.length - 1 ? (
+                    <div
+                      aria-live="polite"
+                      className="bg-muted text-muted-foreground flex items-center gap-2 rounded-lg px-3 py-2 text-xs"
+                    >
+                      <Search className="size-3.5 animate-pulse" />
+                      {stage === "generating"
+                        ? `Found ${turn.citations.length} source${turn.citations.length === 1 ? "" : "s"} · Generating answer…`
+                        : `Searching ${selectedCourse?.code ?? "your materials"}…`}
+                    </div>
+                  ) : null}
                   {turn.citations.length > 0 ? (
                     <div className="flex flex-col gap-2">
                       <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
@@ -313,10 +667,56 @@ export function AskDialog() {
                         />
                       ))}
                     </div>
-                  ) : pending && index === turns.length - 1 ? (
-                    <p className="text-muted-foreground text-sm">
-                      Searching materials…
-                    </p>
+                  ) : null}
+                  {turn.answer ? (
+                    <div className="flex flex-wrap gap-2">
+                      {turn.citations[0] ? (
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => {
+                            setOpen(false);
+                            router.push(citationHref(turn.citations[0]));
+                          }}
+                        >
+                          <ExternalLink />
+                          Open best source
+                        </Button>
+                      ) : null}
+                      {containsDate(turn.answer) ? (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setOpen(false);
+                            router.push("/agenda");
+                          }}
+                        >
+                          <CalendarDays />
+                          View agenda
+                        </Button>
+                      ) : null}
+                    </div>
+                  ) : null}
+                  {turn.followUps.length > 0 ? (
+                    <div className="flex flex-col gap-1.5">
+                      <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                        Ask next
+                      </p>
+                      {turn.followUps.map((question) => (
+                        <Button
+                          key={question}
+                          type="button"
+                          variant="ghost"
+                          className="h-auto justify-start px-2.5 py-2 text-left whitespace-normal"
+                          onClick={() => void ask(question)}
+                        >
+                          {question}
+                        </Button>
+                      ))}
+                    </div>
                   ) : null}
                 </div>
               ))}
@@ -329,6 +729,7 @@ export function AskDialog() {
                 onClick={resetThread}
               >
                 New question
+                <kbd className="ml-1 font-mono">⌘⇧⌫</kbd>
               </button>
             </div>
           </>

@@ -15,7 +15,11 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
     <div className="flex h-svh overflow-hidden">
       <AppSidebar courses={courses} role={user.role} />
       <div className="flex min-w-0 min-h-0 flex-1 flex-col">
-        <AppTopbar user={user} users={visibleUsers(store.users())} />
+        <AppTopbar
+          user={user}
+          users={visibleUsers(store.users())}
+          courses={courses}
+        />
         <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
           {children}
         </main>
