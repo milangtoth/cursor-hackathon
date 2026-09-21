@@ -40,6 +40,11 @@ export default async function WeekDashboardPage({
               courseId={course.id}
               material={material}
               showDraft={showDraft}
+              submitted={
+                user.role === "student" &&
+                material.kind === "assignment" &&
+                store.submissionFor(user.id, material.id) != null
+              }
             />
           ))}
         </section>

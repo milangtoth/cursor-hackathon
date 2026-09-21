@@ -1,10 +1,13 @@
+import { redirect } from "next/navigation";
 import { canViewDeadline, requireDemoUser } from "@/components/demo-session";
 import { AgendaList } from "@/components/agenda-list";
 import { materialPath } from "@/components/course-modules";
+import { homePathFor } from "@/lib/roles";
 import { store } from "@/lib/store";
 
 export default async function AgendaPage() {
   const user = await requireDemoUser();
+  if (user.role !== "student") redirect(homePathFor(user.role));
   const items = store
     .deadlines()
     .filter((deadline) => canViewDeadline(user, deadline))

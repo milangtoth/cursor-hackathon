@@ -15,10 +15,12 @@ export function MaterialCard({
   courseId,
   material,
   showDraft,
+  submitted,
 }: {
   courseId: string;
   material: Material;
   showDraft: boolean;
+  submitted?: boolean;
 }) {
   const summary = store.summary(material.id);
   const isAssignment = material.kind === "assignment";
@@ -36,6 +38,7 @@ export function MaterialCard({
               {showDraft && !material.published ? (
                 <Badge variant="secondary">Draft</Badge>
               ) : null}
+              {submitted ? <Badge>Handed in</Badge> : null}
               <Badge variant="outline">
                 {isAssignment ? "Assignment" : "Lecture"}
               </Badge>

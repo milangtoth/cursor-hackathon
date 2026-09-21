@@ -1,62 +1,45 @@
 "use client";
 
-import { CalendarDays, Home, Shield, Presentation } from "lucide-react";
+import { CalendarDays, Home } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { CourseTermFilters } from "@/components/course-term-filters";
-import { filterCourses, parseTermFilters, termHref } from "@/components/course-term";
+import {
+  filterCourses,
+  parseTermFilters,
+  termHref,
+} from "@/components/course-term";
 import { NavLink } from "@/components/nav-link";
-import type { Block, Course, Role, Semester } from "@/lib/types";
+import type { Block, Course } from "@/lib/types";
 
-export function SidebarNav({
-  courses,
-  role,
-}: {
-  courses: Course[];
-  role: Role;
-}) {
+export function SidebarNav({ courses }: { courses: Course[] }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const filters = parseTermFilters({
-    semester: searchParams.get("semester") ?? undefined,
     block: searchParams.get("block") ?? undefined,
   });
 
   return (
     <SidebarNavContent
       courses={courses}
-      role={role}
       filters={filters}
       basePath={pathname}
     />
   );
 }
 
-export function SidebarNavFallback({
-  courses,
-  role,
-}: {
-  courses: Course[];
-  role: Role;
-}) {
+export function SidebarNavFallback({ courses }: { courses: Course[] }) {
   return (
-    <SidebarNavContent
-      courses={courses}
-      role={role}
-      filters={{}}
-      basePath="/"
-    />
+    <SidebarNavContent courses={courses} filters={{}} basePath="/" />
   );
 }
 
 function SidebarNavContent({
   courses,
-  role,
   filters,
   basePath,
 }: {
   courses: Course[];
-  role: Role;
-  filters: { semester?: Semester; block?: Block };
+  filters: { block?: Block };
   basePath: string;
 }) {
   const visible = filterCourses(courses, filters);
@@ -72,18 +55,6 @@ function SidebarNavContent({
           <CalendarDays className="size-4" />
           Agenda
         </NavLink>
-        {role === "teacher" ? (
-          <NavLink href={termHref("/teacher", filters)}>
-            <Presentation className="size-4" />
-            Teaching
-          </NavLink>
-        ) : null}
-        {role === "admin" ? (
-          <NavLink href={termHref("/admin", filters)}>
-            <Shield className="size-4" />
-            Admin
-          </NavLink>
-        ) : null}
       </div>
       <div className="flex flex-col gap-2">
         <p className="px-2.5 text-xs font-medium tracking-wide text-muted-foreground uppercase">
@@ -93,7 +64,6 @@ function SidebarNavContent({
           <CourseTermFilters
             compact
             basePath={basePath}
-            semester={filters.semester}
             block={filters.block}
           />
         </div>

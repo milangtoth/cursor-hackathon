@@ -203,6 +203,7 @@ async function main() {
     deadlines,
     summaries,
     questionLog: store.questionLog(),
+    submissions: store.submissions(),
   });
 
   console.log(

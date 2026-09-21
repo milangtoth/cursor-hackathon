@@ -14,11 +14,12 @@ export function NavLink({
   exact?: boolean;
 }) {
   const pathname = usePathname();
+  const pathOnly = href.split("?")[0] ?? href;
   const active = exact
-    ? pathname === href
-    : href === "/"
+    ? pathname === pathOnly
+    : pathOnly === "/"
       ? pathname === "/"
-      : pathname === href || pathname.startsWith(`${href}/`);
+      : pathname === pathOnly || pathname.startsWith(`${pathOnly}/`);
 
   return (
     <Link

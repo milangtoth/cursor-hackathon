@@ -85,6 +85,16 @@ export interface QuestionLogEntry {
   citationCount: number;
 }
 
+export interface Submission {
+  id: string;
+  userId: string;
+  courseId: string;
+  materialId: string;
+  fileName: string;
+  originalName: string;
+  submittedAt: string;
+}
+
 export interface IngestMeta {
   courseId: string;
   moduleId: string;

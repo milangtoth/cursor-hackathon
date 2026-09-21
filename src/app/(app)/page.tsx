@@ -1,14 +1,17 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { CourseCard } from "@/components/course-card";
 import { materialPath } from "@/components/course-modules";
 import { CourseTermFilters } from "@/components/course-term-filters";
 import { filterCourses, parseTermFilters } from "@/components/course-term";
 import { formatDueAt } from "@/components/due-date";
 import { canViewDeadline, requireDemoUser } from "@/components/demo-session";
+import { homePathFor } from "@/lib/roles";
 import { store } from "@/lib/store";
 
 export default async function HomePage({ searchParams }: PageProps<"/">) {
   const user = await requireDemoUser();
+  if (user.role !== "student") redirect(homePathFor(user.role));
   const filters = parseTermFilters(await searchParams);
   const courses = filterCourses(store.coursesForUser(user), filters);
   const now = Date.now();
@@ -32,11 +35,7 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
 
       <section className="flex flex-col gap-3">
         <h2 className="text-sm font-medium">Courses</h2>
-        <CourseTermFilters
-          basePath="/"
-          semester={filters.semester}
-          block={filters.block}
-        />
+        <CourseTermFilters basePath="/" block={filters.block} />
         {courses.length === 0 ? (
           <p className="text-muted-foreground text-sm">
             No courses in this term.

@@ -7,6 +7,7 @@ import type {
   Deadline,
   Material,
   QuestionLogEntry,
+  Submission,
   User,
 } from "./types";
 
@@ -18,6 +19,7 @@ export type StoreData = {
   deadlines: Deadline[];
   summaries: Record<string, string>;
   questionLog: QuestionLogEntry[];
+  submissions: Submission[];
 };
 
 const DATA_DIR = join(process.cwd(), "data");
@@ -30,6 +32,7 @@ const FILES = {
   deadlines: "deadlines.json",
   summaries: "summaries.json",
   questionLog: "question-log.json",
+  submissions: "submissions.json",
 } as const;
 
 function readJson<T>(file: string, fallback: T): T {
@@ -52,6 +55,7 @@ function loadFromDisk(): StoreData {
     deadlines: readJson(FILES.deadlines, []),
     summaries: readJson(FILES.summaries, {}),
     questionLog: readJson(FILES.questionLog, []),
+    submissions: readJson(FILES.submissions, []),
   };
 }
 
@@ -62,7 +66,9 @@ function persist(data: StoreData, keys: (keyof typeof FILES)[] = Object.keys(FIL
 }
 
 export class Store {
-  constructor(private data: StoreData) {}
+  constructor(private data: StoreData) {
+    this.data.submissions ??= [];
+  }
 
   users() {
     return this.data.users;
@@ -120,8 +126,9 @@ export class Store {
   summary(materialId: string) {
     return this.data.summaries[materialId] ?? null;
   }
-  setSummary(materialId: string, summary: string) {
-    this.data.summaries[materialId] = summary;
+  setSummary(materialId: string, summary: string | null) {
+    if (summary) this.data.summaries[materialId] = summary;
+    else delete this.data.summaries[materialId];
     persist(this.data, ["summaries"]);
   }
 
@@ -142,11 +149,40 @@ export class Store {
     return full;
   }
 
+  submissions() {
+    return this.data.submissions;
+  }
+  submissionsByCourse(courseId: string) {
+    return this.data.submissions.filter((entry) => entry.courseId === courseId);
+  }
+  submissionsByMaterial(materialId: string) {
+    return this.data.submissions.filter((entry) => entry.materialId === materialId);
+  }
+  submissionFor(userId: string, materialId: string) {
+    return this.data.submissions.find(
+      (entry) => entry.userId === userId && entry.materialId === materialId,
+    );
+  }
+  upsertSubmission(submission: Submission) {
+    const idx = this.data.submissions.findIndex(
+      (entry) =>
+        entry.userId === submission.userId &&
+        entry.materialId === submission.materialId,
+    );
+    if (idx === -1) this.data.submissions.push(submission);
+    else this.data.submissions[idx] = submission;
+    persist(this.data, ["submissions"]);
+    return idx === -1 ? submission : this.data.submissions[idx];
+  }
+
   upsertMaterial(material: Material) {
     const idx = this.data.materials.findIndex((m) => m.id === material.id);
+    const prevModuleId = idx === -1 ? undefined : this.data.materials[idx].moduleId;
     if (idx === -1) this.data.materials.push(material);
     else this.data.materials[idx] = material;
-    this.attachMaterialToModule(material);
+    if (prevModuleId !== material.moduleId) {
+      this.attachMaterialToModule(material);
+    }
     persist(this.data, ["materials", "courses"]);
   }
 
@@ -181,12 +217,22 @@ export class Store {
     this.data.deadlines = this.data.deadlines.filter(
       (d) => "manual" in d.source || d.source.materialId !== materialId
     );
+    this.data.submissions = this.data.submissions.filter(
+      (entry) => entry.materialId !== materialId,
+    );
     for (const course of this.data.courses) {
       for (const mod of course.modules) {
         mod.materialIds = mod.materialIds.filter((id) => id !== materialId);
       }
     }
-    persist(this.data, ["materials", "chunks", "summaries", "deadlines", "courses"]);
+    persist(this.data, [
+      "materials",
+      "chunks",
+      "summaries",
+      "deadlines",
+      "courses",
+      "submissions",
+    ]);
   }
 
   replaceAll(data: StoreData) {
@@ -201,14 +247,21 @@ export class Store {
   private attachMaterialToModule(material: Material) {
     const course = this.data.courses.find((c) => c.id === material.courseId);
     if (!course) return;
+    for (const mod of course.modules) {
+      mod.materialIds = mod.materialIds.filter((id) => id !== material.id);
+    }
     const mod = course.modules.find((m) => m.id === material.moduleId);
     if (!mod) return;
-    if (!mod.materialIds.includes(material.id)) mod.materialIds.push(material.id);
+    mod.materialIds.push(material.id);
   }
 }
 
 const g = globalThis as unknown as { __lmsStore?: Store };
-export const store = (g.__lmsStore ??= new Store(loadFromDisk()));
+const existing = g.__lmsStore;
+export const store =
+  existing && Array.isArray(existing.snapshot().submissions)
+    ? existing
+    : (g.__lmsStore = new Store(loadFromDisk()));
 
 export function newId() {
   return randomUUID();

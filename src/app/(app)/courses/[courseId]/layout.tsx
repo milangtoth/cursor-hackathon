@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { requireDemoUser } from "@/components/demo-session";
 import { ModuleTree } from "@/components/module-tree";
 import { store } from "@/lib/store";
@@ -9,6 +9,7 @@ export default async function CourseLayout({
 }: LayoutProps<"/courses/[courseId]">) {
   const user = await requireDemoUser();
   const { courseId } = await params;
+  if (user.role === "teacher") redirect(`/teacher/${courseId}`);
   const course = store.course(courseId);
   if (!course) notFound();
   if (user.role !== "admin" && !user.courseIds.includes(course.id)) notFound();

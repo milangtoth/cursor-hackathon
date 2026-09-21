@@ -3,6 +3,7 @@ import Link from "next/link";
 import { canViewMaterial, requireDemoUser } from "@/components/demo-session";
 import { weekPath } from "@/components/course-modules";
 import { ExtractTasksCard } from "@/components/extract-tasks-card";
+import { AssignmentHandIn } from "@/components/assignment-hand-in";
 import { MaterialViewer } from "@/components/material-viewer";
 import { SummaryPanel } from "@/components/summary-panel";
 import { Badge } from "@/components/ui/badge";
@@ -71,6 +72,13 @@ export default async function MaterialPage({
           </Badge>
         </span>
       </div>
+      {material.kind === "assignment" && user.role === "student" ? (
+        <AssignmentHandIn
+          materialId={material.id}
+          dueAt={store.deadlinesByMaterial(material.id)[0]?.dueAt}
+          initial={store.submissionFor(user.id, material.id) ?? null}
+        />
+      ) : null}
       <SummaryPanel
         key={material.id}
         materialId={material.id}
