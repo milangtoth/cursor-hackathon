@@ -156,6 +156,11 @@ export class Store {
     persist(this.data, ["chunks"]);
   }
 
+  saveChunks(chunks: Chunk[]) {
+    this.data.chunks = chunks;
+    persist(this.data, ["chunks"]);
+  }
+
   addDeadlines(deadlines: Deadline[]) {
     this.data.deadlines.push(...deadlines);
     persist(this.data, ["deadlines"]);
