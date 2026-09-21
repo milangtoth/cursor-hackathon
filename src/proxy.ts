@@ -10,8 +10,9 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (path.startsWith("/admin") && session.role !== "admin") {
-    return NextResponse.redirect(new URL("/", request.url));
+  if (path.startsWith("/admin")) {
+    const dest = session.role === "admin" ? "/login" : "/";
+    return NextResponse.redirect(new URL(dest, request.url));
   }
 
   if (path.startsWith("/teacher") && session.role !== "teacher" && session.role !== "admin") {

@@ -1,4 +1,5 @@
 import { LoginCards } from "@/components/login-cards";
+import { visibleUsers } from "@/lib/roles";
 import { store } from "@/lib/store";
 
 export default function LoginPage() {
@@ -11,7 +12,7 @@ export default function LoginPage() {
           Pick a seeded user. This is a demo cookie, not production auth.
         </p>
       </div>
-      <LoginCards users={store.users()} />
+      <LoginCards users={visibleUsers(store.users())} />
     </main>
   );
 }
