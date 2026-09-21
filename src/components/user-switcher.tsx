@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ChevronsUpDown, Monitor, Moon, Settings, Sun } from "lucide-react";
-import { signOut, switchUser } from "@/components/demo-session-actions";
+import { useSessionSwitch } from "@/components/use-session-switch";
 import { RoleBadge } from "@/components/role-badge";
 import {
   persistTheme,
@@ -33,6 +33,7 @@ export function UserSwitcher({
   user: User;
   users: User[];
 }) {
+  const { loginAs, logout } = useSessionSwitch();
   const [theme, setTheme] = useState<ThemePreference>("system");
 
   useEffect(() => {
@@ -56,7 +57,7 @@ export function UserSwitcher({
           {users.map((candidate) => (
             <DropdownMenuItem
               key={candidate.id}
-              onClick={() => switchUser(candidate.id)}
+              onClick={() => loginAs(candidate.id, candidate.role)}
               className="justify-between"
             >
               <span>{candidate.name}</span>
@@ -95,7 +96,7 @@ export function UserSwitcher({
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onClick={() => signOut()}>
+        <DropdownMenuItem variant="destructive" onClick={() => logout()}>
           Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>

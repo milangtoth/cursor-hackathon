@@ -71,6 +71,11 @@ export interface AskResponse {
   citations: Citation[];
 }
 
+export interface AskTurn {
+  question: string;
+  answer: string;
+}
+
 export interface QuestionLogEntry {
   id: string;
   userId: string;

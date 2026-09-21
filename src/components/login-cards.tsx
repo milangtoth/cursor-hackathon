@@ -1,6 +1,6 @@
 "use client";
 
-import { switchUser } from "@/components/demo-session-actions";
+import { useSessionSwitch } from "@/components/use-session-switch";
 import { RoleBadge } from "@/components/role-badge";
 import {
   Card,
@@ -11,13 +11,14 @@ import {
 import type { User } from "@/lib/types";
 
 export function LoginCards({ users }: { users: User[] }) {
+  const { loginAs } = useSessionSwitch();
   return (
     <ul className="flex flex-col gap-2">
       {users.map((user) => (
         <li key={user.id}>
           <button
             type="button"
-            onClick={() => switchUser(user.id)}
+            onClick={() => loginAs(user.id, user.role)}
             className="w-full text-left"
           >
             <Card className="hover:bg-accent/50 hover:ring-primary/40 h-full transition-colors hover:ring-2">

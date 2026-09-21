@@ -8,6 +8,15 @@ import type { Citation, Deadline } from "@/lib/types";
 const bodySchema = z.object({
   question: z.string().min(1),
   courseId: z.string().optional(),
+  history: z
+    .array(
+      z.object({
+        question: z.string().min(1),
+        answer: z.string().min(1),
+      })
+    )
+    .max(6)
+    .optional(),
 });
 
 const NOT_FOUND = "not found in your materials";
@@ -79,10 +88,14 @@ export async function POST(req: Request) {
       return Response.json({ error: "invalid body" }, { status: 400 });
     }
 
-    const { question, courseId } = parsed.data;
+    const { question, courseId, history = [] } = parsed.data;
+    const prior = history.slice(-4);
+    const retrieveQuery = prior.length
+      ? `${prior.map((t) => t.question).join(" ")} ${question}`
+      : question;
 
     return ndjsonStream(async (send) => {
-      const hits = await retrieve(question, courseId);
+      const hits = await retrieve(retrieveQuery, courseId);
       const retrieved = toCitations(hits);
       // Flush sources before generation so the dialog can paint them immediately.
       send({ type: "citations", citations: retrieved });
@@ -110,13 +123,24 @@ export async function POST(req: Request) {
         )
         .join("\n\n");
 
+      const thread =
+        prior.length === 0
+          ? ""
+          : `Earlier in this thread (for pronouns like "that" / "it" only; still cite only the excerpts below):\n${prior
+              .map((t) => `Student: ${t.question}\nYou: ${t.answer}`)
+              .join("\n")}\n\n`;
+
       const generated = await generateJson({
-        prompt: `You answer a student using ONLY the numbered excerpts and the deadline list.
+        prompt: `You answer a student using ONLY the numbered excerpts. The deadline list is extra context for date questions only.
 Cite only supplied chunk ids in citationIds. Do not invent ids.
 Keep the answer to 4 sentences or fewer.
-If the excerpts and deadlines do not contain the answer, say you could not find it in the materials.
 
-Deadline list:
+If they ask to summarize or overview a course or document, write that overview from the excerpts. Do not refuse because no excerpt is labelled "summary". Mention deadlines only if they asked when something is due, or in one short sentence as part of a syllabus overview.
+
+Use the deadline list ONLY for when/due/exam/date questions. Ignore it for summarize/explain questions.
+
+If the excerpts truly have nothing on the topic, say you could not find it in the materials.
+${thread}Deadline list:
 ${formatDeadlines(deadlines)}
 
 Excerpts:

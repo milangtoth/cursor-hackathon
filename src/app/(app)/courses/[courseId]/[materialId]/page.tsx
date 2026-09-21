@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { canViewMaterial, requireDemoUser } from "@/components/demo-session";
 import { weekPath } from "@/components/course-modules";
+import { ExtractTasksCard } from "@/components/extract-tasks-card";
 import { MaterialViewer } from "@/components/material-viewer";
 import { SummaryPanel } from "@/components/summary-panel";
 import { Badge } from "@/components/ui/badge";
@@ -71,9 +72,14 @@ export default async function MaterialPage({
         </span>
       </div>
       <SummaryPanel
+        key={material.id}
         materialId={material.id}
         initialSummary={store.summary(material.id)}
       />
+      {material.id === "mat-db201-lab" &&
+      store.deadlinesByMaterial(material.id).length === 0 ? (
+        <ExtractTasksCard materialId={material.id} />
+      ) : null}
       <MaterialViewer
         chunks={store.chunksByMaterial(material.id).map((entry) => ({
           page: entry.page,

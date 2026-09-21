@@ -91,6 +91,16 @@ export function AskDialog() {
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
+  function resetAsk() {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    setQuestion("");
+    setPending(false);
+    setAnswer(null);
+    setCitations([]);
+    setError(null);
+  }
+
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
@@ -150,7 +160,13 @@ export function AskDialog() {
   const hasResults = pending || answer != null || citations.length > 0;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next);
+        if (!next) resetAsk();
+      }}
+    >
       <DialogTrigger
         render={
           <Button

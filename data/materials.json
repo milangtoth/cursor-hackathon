@@ -7,7 +7,7 @@
     "title": "Course syllabus",
     "fileName": "cs101-syllabus.pdf",
     "pageCount": 2,
-    "uploadedAt": "2026-09-21T13:16:10.396Z",
+    "uploadedAt": "2026-09-21T13:21:38.209Z",
     "published": true
   },
   {
@@ -18,7 +18,7 @@
     "title": "Lecture: Sorting algorithms",
     "fileName": "cs101-sorting.pdf",
     "pageCount": 2,
-    "uploadedAt": "2026-09-21T13:16:10.411Z",
+    "uploadedAt": "2026-09-21T13:21:38.223Z",
     "published": false
   },
   {
@@ -29,7 +29,7 @@
     "title": "Assignment 1: Sorting visualiser",
     "fileName": "cs101-assignment-1.pdf",
     "pageCount": 1,
-    "uploadedAt": "2026-09-21T13:16:10.419Z",
+    "uploadedAt": "2026-09-21T13:21:38.232Z",
     "published": true
   },
   {
@@ -40,7 +40,7 @@
     "title": "Lecture: Graphs",
     "fileName": "cs101-graphs.pdf",
     "pageCount": 1,
-    "uploadedAt": "2026-09-21T13:16:10.428Z",
+    "uploadedAt": "2026-09-21T13:21:38.240Z",
     "published": true
   },
   {
@@ -51,7 +51,7 @@
     "title": "Course syllabus",
     "fileName": "db201-syllabus.pdf",
     "pageCount": 2,
-    "uploadedAt": "2026-09-21T13:16:10.437Z",
+    "uploadedAt": "2026-09-21T13:21:38.249Z",
     "published": true
   },
   {
@@ -62,7 +62,7 @@
     "title": "Lecture: Relational algebra and SQL",
     "fileName": "db201-sql.pdf",
     "pageCount": 2,
-    "uploadedAt": "2026-09-21T13:16:10.461Z",
+    "uploadedAt": "2026-09-21T13:21:38.271Z",
     "published": true
   },
   {
@@ -73,7 +73,7 @@
     "title": "Lab 3: Writing queries",
     "fileName": "db201-lab-queries.pdf",
     "pageCount": 1,
-    "uploadedAt": "2026-09-21T13:16:10.469Z",
+    "uploadedAt": "2026-09-21T13:21:38.282Z",
     "published": true
   },
   {
@@ -84,7 +84,7 @@
     "title": "Assignment 1: ER modelling",
     "fileName": "db201-assignment-er.pdf",
     "pageCount": 1,
-    "uploadedAt": "2026-09-21T13:16:10.475Z",
+    "uploadedAt": "2026-09-21T13:21:38.287Z",
     "published": true
   },
   {
@@ -95,7 +95,7 @@
     "title": "Week 6 lecture notes: Normalisation",
     "fileName": "db201-week6-normalisation.pdf",
     "pageCount": 1,
-    "uploadedAt": "2026-09-21T13:16:10.484Z",
+    "uploadedAt": "2026-09-21T13:21:38.295Z",
     "published": true
   }
 ]
