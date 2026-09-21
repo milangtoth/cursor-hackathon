@@ -1,10 +1,40 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { jsonError, requireRole } from "@/lib/auth";
-import { ingestPdf, IngestError } from "@/lib/ingest";
+import { ingestPdf, IngestError, type IngestStep } from "@/lib/ingest";
 import { store } from "@/lib/store";
 
 export const runtime = "nodejs";
+
+function ndjsonStream(write: (send: (event: unknown) => void) => Promise<void>) {
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    async start(controller) {
+      const send = (event: unknown) => {
+        controller.enqueue(encoder.encode(`${JSON.stringify(event)}\n`));
+      };
+      try {
+        await write(send);
+      } catch (error) {
+        if (error instanceof IngestError) {
+          send({ type: "error", error: error.message });
+        } else {
+          const message = error instanceof Error ? error.message : "upload failed";
+          send({ type: "error", error: message });
+        }
+      } finally {
+        controller.close();
+      }
+    },
+  });
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "application/x-ndjson; charset=utf-8",
+      "Cache-Control": "no-cache, no-transform",
+      "X-Accel-Buffering": "no",
+    },
+  });
+}
 
 export async function POST(req: Request) {
   try {
@@ -29,33 +59,60 @@ export async function POST(req: Request) {
     const buf = Buffer.from(await file.arrayBuffer());
     const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, "_") || "upload.pdf";
     const fileName = `${Date.now()}-${safe}`;
-    const dir = join(process.cwd(), "uploads");
-    mkdirSync(dir, { recursive: true });
-    writeFileSync(join(dir, fileName), buf);
+    const uploadDir = join(process.cwd(), "uploads");
+    const publicDir = join(process.cwd(), "public", "content");
+    mkdirSync(uploadDir, { recursive: true });
+    mkdirSync(publicDir, { recursive: true });
+    writeFileSync(join(uploadDir, fileName), buf);
+    writeFileSync(join(publicDir, fileName), buf);
 
-    const result = await ingestPdf(buf, {
-      courseId,
-      moduleId,
-      title,
-      fileName,
-      kind: "pdf",
-      published: true,
-    });
+    const wantsStream = (req.headers.get("accept") ?? "").includes("ndjson");
+    const runIngest = async (onProgress?: (step: IngestStep) => void) => {
+      const result = await ingestPdf(
+        buf,
+        {
+          courseId,
+          moduleId,
+          title,
+          fileName,
+          kind: "pdf",
+          published: true,
+        },
+        onProgress
+      );
+      store.upsertMaterial(result.material);
+      store.replaceChunksForMaterial(result.material.id, result.chunks);
+      if (result.deadlines.length) store.addDeadlines(result.deadlines);
+      if (result.summary) store.setSummary(result.material.id, result.summary);
+      return result;
+    };
 
-    store.upsertMaterial(result.material);
-    store.replaceChunksForMaterial(result.material.id, result.chunks);
-    if (result.deadlines.length) store.addDeadlines(result.deadlines);
-    if (result.summary) store.setSummary(result.material.id, result.summary);
+    if (!wantsStream) {
+      try {
+        const result = await runIngest();
+        return Response.json({
+          material: result.material,
+          chunksAdded: result.chunks.length,
+          deadlinesFound: result.deadlines.length,
+        });
+      } catch (error) {
+        if (error instanceof IngestError) {
+          return Response.json({ error: error.message }, { status: 422 });
+        }
+        throw error;
+      }
+    }
 
-    return Response.json({
-      material: result.material,
-      chunksAdded: result.chunks.length,
-      deadlinesFound: result.deadlines.length,
+    return ndjsonStream(async (send) => {
+      const result = await runIngest((step) => send({ type: "step", ...step }));
+      send({
+        type: "done",
+        material: result.material,
+        chunksAdded: result.chunks.length,
+        deadlinesFound: result.deadlines.length,
+      });
     });
   } catch (error) {
-    if (error instanceof IngestError) {
-      return Response.json({ error: error.message }, { status: 422 });
-    }
     return jsonError(error);
   }
 }

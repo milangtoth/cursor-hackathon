@@ -73,11 +73,9 @@ function addFeature(vec: Float64Array, feat: string, weight: number) {
 
 export type EmbedTask = "RETRIEVAL_DOCUMENT" | "RETRIEVAL_QUERY" | "SEMANTIC_SIMILARITY";
 
-function embedOne(text: string, taskType: EmbedTask): number[] {
+function embedOne(text: string, _taskType: EmbedTask): number[] {
   const vec = new Float64Array(EMBED_DIM);
-  const prefixed =
-    taskType === "RETRIEVAL_QUERY" ? `query ${text}` : `passage ${text}`;
-  const tokens = prefixed.toLowerCase().match(/[a-z0-9]{2,}/g) ?? [];
+  const tokens = text.toLowerCase().match(/[a-z0-9]{2,}/g) ?? [];
   for (const tok of tokens) {
     addFeature(vec, tok, 1);
     if (tok.length >= 3) {

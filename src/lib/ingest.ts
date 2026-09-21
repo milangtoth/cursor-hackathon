@@ -10,6 +10,11 @@ import {
 import { newId } from "./store";
 import type { Chunk, Deadline, IngestMeta, IngestResult, Material } from "./types";
 
+export type IngestStep = {
+  step: "parsing" | "chunking" | "embedding" | "extracting" | "indexing";
+  detail?: string;
+};
+
 const CHUNK_CHARS = 900;
 
 export class IngestError extends Error {
@@ -101,13 +106,22 @@ async function extractSummary(pages: string[], title: string): Promise<string | 
   return summary || null;
 }
 
-export async function ingestPdf(buffer: Buffer | Uint8Array, meta: IngestMeta): Promise<IngestResult> {
+export async function ingestPdf(
+  buffer: Buffer | Uint8Array,
+  meta: IngestMeta,
+  onProgress?: (step: IngestStep) => void
+): Promise<IngestResult> {
+  onProgress?.({ step: "parsing" });
   const { totalPages, text: pages } = await extractText(toPdfBytes(buffer), { mergePages: false });
   const pageTexts = Array.isArray(pages) ? pages : [pages];
   const hasText = pageTexts.some((p) => p.replace(/\s+/g, " ").trim().length > 0);
   if (!totalPages || !hasText) {
     throw new IngestError("no text layer found, OCR is on the roadmap");
   }
+  onProgress?.({
+    step: "parsing",
+    detail: `${totalPages} page${totalPages === 1 ? "" : "s"}`,
+  });
 
   const materialId = meta.materialId ?? newId();
   const material: Material = {
@@ -122,8 +136,15 @@ export async function ingestPdf(buffer: Buffer | Uint8Array, meta: IngestMeta): 
     published: meta.published ?? true,
   };
 
+  onProgress?.({ step: "chunking" });
   const pieces = pageTexts.flatMap((pageText, i) => chunkPage(pageText, i + 1));
-  const embeddings = await embedTexts(pieces.map((p) => p.text), "RETRIEVAL_DOCUMENT");
+  onProgress?.({ step: "chunking", detail: `${pieces.length} chunks` });
+  onProgress?.({ step: "embedding" });
+  const embeddings = await embedTexts(
+    pieces.map((p) => p.text),
+    "RETRIEVAL_DOCUMENT"
+  );
+  onProgress?.({ step: "embedding", detail: `${embeddings.length} vectors` });
 
   const chunks: Chunk[] = pieces.map((p, i) => ({
     id: `${materialId}-p${p.page}-c${i}`,
@@ -136,6 +157,10 @@ export async function ingestPdf(buffer: Buffer | Uint8Array, meta: IngestMeta): 
 
   let deadlines: Deadline[] = [];
   let summary: string | null = null;
+
+  if (meta.extractDeadlines !== false || meta.extractSummary !== false) {
+    onProgress?.({ step: "extracting" });
+  }
 
   if (meta.extractDeadlines !== false) {
     try {
@@ -154,6 +179,11 @@ export async function ingestPdf(buffer: Buffer | Uint8Array, meta: IngestMeta): 
       summary = null;
     }
   }
+
+  onProgress?.({
+    step: "indexing",
+    detail: `${deadlines.length} deadline${deadlines.length === 1 ? "" : "s"}`,
+  });
 
   return { material, chunks, deadlines, summary };
 }

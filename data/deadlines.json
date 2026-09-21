@@ -1,6 +1,6 @@
 [
   {
-    "id": "f84aab14-6dac-4c92-90b0-4d856112f56b",
+    "id": "07a74806-9e11-4721-b340-2735ef6f87e2",
     "courseId": "cs101",
     "title": "Assignment 1: Sorting visualiser",
     "dueAt": "2026-10-14T23:59:00.000Z",
@@ -10,7 +10,7 @@
     }
   },
   {
-    "id": "47b92309-74b9-4a3d-bdfb-36dbe8387e72",
+    "id": "faae8146-77b4-45b5-aed4-931ffd7ac786",
     "courseId": "cs101",
     "title": "Graph project checkpoint",
     "dueAt": "2026-11-28T23:59:00.000Z",
@@ -20,7 +20,7 @@
     }
   },
   {
-    "id": "b2eb7d60-bfb8-4c62-8cac-dd7d3bf8b9dd",
+    "id": "e6e405af-ed45-489d-8853-5457f4f8e79b",
     "courseId": "cs101",
     "title": "Final exam",
     "dueAt": "2026-12-12T09:00:00.000Z",
@@ -30,7 +30,7 @@
     }
   },
   {
-    "id": "88d42d2b-9ba2-4753-a83a-f8a571be843e",
+    "id": "340a08c8-03fc-47ae-a897-ec29f7ef0e67",
     "courseId": "db201",
     "title": "Assignment 1: ER modelling",
     "dueAt": "2026-10-14T23:59:00.000Z",
@@ -40,7 +40,7 @@
     }
   },
   {
-    "id": "7d0e9eee-cd4d-46d2-910b-9e8230bdb1a1",
+    "id": "a2ada3d3-f82a-4e4b-bcea-1fa4ed4146e5",
     "courseId": "db201",
     "title": "Midterm test",
     "dueAt": "2026-11-02T09:00:00.000Z",
@@ -50,7 +50,7 @@
     }
   },
   {
-    "id": "18a99b93-a46a-45b1-9853-4c4e06639819",
+    "id": "a9507efa-9b79-4833-b72a-f9bf57f02a87",
     "courseId": "db201",
     "title": "Normalisation mini-project",
     "dueAt": "2026-11-20T23:59:00.000Z",
@@ -60,7 +60,7 @@
     }
   },
   {
-    "id": "d5be8e18-2d11-40b8-b16b-49c94ed4b95d",
+    "id": "8af0c87b-8e8d-4820-b90c-f6be3362a476",
     "courseId": "db201",
     "title": "Final exam",
     "dueAt": "2026-12-15T09:00:00.000Z",
