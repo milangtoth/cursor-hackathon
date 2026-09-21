@@ -1,0 +1,41 @@
+---
+description: Navigation and loading rules that keep ModernLMS feeling like an SPA
+globs: src/**/*.tsx
+alwaysApply: false
+---
+
+# Never cause a full page reload
+
+The entire pitch is "unlike Moodle, nothing reloads". A single full reload in the demo undoes it.
+
+Bad:
+
+```tsx
+window.location.href = `/courses/${id}`;
+<a href={`/courses/${id}`}>Open</a>
+<form action="/api/assignments" method="post">
+```
+
+Good:
+
+```tsx
+const router = useRouter();
+router.push(`/courses/${id}`);
+<Link href={`/courses/${id}`} prefetch>Open</Link>
+// mutations: fetch() or a server action, then router.refresh()
+```
+
+# Keep the shell out of the page
+
+Sidebars, topbar, and the module tree belong in `layout.tsx`, never in `page.tsx`. If a sidebar
+re-mounts on navigation it flickers, and the flicker is the thing we are selling against.
+
+# Every route gets a skeleton
+
+Add a `loading.tsx` next to each `page.tsx`. Skeletons match the real layout's shape so content
+does not jump when it lands.
+
+# Show retrieval before generation
+
+In the ask flow, render citation cards as soon as retrieval returns and let the answer text fill
+in above them. Do not block the whole result on the model call.
