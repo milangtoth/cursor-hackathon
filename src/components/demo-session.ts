@@ -1,15 +1,10 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { store } from "@/lib/store";
-import type { Deadline, Material, Role, User } from "@/lib/types";
+import type { Deadline, Material, User } from "@/lib/types";
 
 export { getCurrentUser } from "@/lib/auth";
-
-export function homePathFor(role: Role) {
-  if (role === "teacher") return "/teacher";
-  if (role === "admin") return "/admin";
-  return "/";
-}
+export { homePathFor } from "@/lib/roles";
 
 export async function requireDemoUser() {
   const user = await getCurrentUser();
