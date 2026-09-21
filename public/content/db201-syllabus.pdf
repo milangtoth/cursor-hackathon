@@ -1,0 +1,89 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 7 0 R >> >> >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 6 0 R /Resources << /Font << /F1 7 0 R >> >> >>
+endobj
+5 0 obj
+<< /Length 633 >>
+stream
+BT
+72 720 Td
+/F1 11 Tf
+(DB201  Introduction to Databases) Tj
+0 -22 Td
+/F1 22 Tf
+(Course syllabus) Tj
+0 -28 Td
+/F1 12 Tf
+(DB201 is an introduction to relational databases: ER modelling, SQL, and normalisation.) Tj
+0 -16 Td
+(You will design schemas, write queries, and reason about data integrity.) Tj
+0 -22 Td
+/F1 14 Tf
+(What we cover) Tj
+0 -18 Td
+/F1 12 Tf
+(- Entity-relationship modelling and relational mapping) Tj
+0 -16 Td
+(- SQL: SELECT, JOIN, GROUP BY, and subqueries) Tj
+0 -16 Td
+(- Normalisation through 3NF with a running example) Tj
+0 -22 Td
+(Assessment is one assignment, a midterm test, and a written exam.) Tj
+0 -16 Td
+ET
+endstream
+endobj
+6 0 obj
+<< /Length 526 >>
+stream
+BT
+72 720 Td
+/F1 11 Tf
+(DB201  Assessment) Tj
+0 -22 Td
+/F1 22 Tf
+(Deadlines) Tj
+0 -28 Td
+/F1 12 Tf
+(Assessment deadlines for Introduction to Databases \(DB201\). Assignment 1: ER modelling) Tj
+0 -16 Td
+(is due 14 October 2026, 23:59. Midterm test: 2 November 2026. Final exam: 15 December) Tj
+0 -16 Td
+(2026.) Tj
+0 -22 Td
+(Assignment 1: ER modelling    14 October 2026, 23:59) Tj
+0 -16 Td
+(Midterm test                  2 November 2026, 09:00) Tj
+0 -16 Td
+(Final exam                    15 December 2026, 09:00) Tj
+0 -16 Td
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000247 00000 n 
+0000000373 00000 n 
+0000001057 00000 n 
+0000001634 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R >>
+startxref
+1704
+%%EOF

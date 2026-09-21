@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { materialPath } from "@/components/course-modules";
 import { canViewDeadline, requireDemoUser } from "@/components/demo-session";
 import { formatDueAt } from "@/components/due-date";
 import { store } from "@/lib/store";
@@ -23,7 +24,9 @@ export default async function AgendaPage() {
           const course = store.course(deadline.courseId);
           const href =
             "materialId" in deadline.source
-              ? `/courses/${deadline.courseId}/${deadline.source.materialId}`
+              ? materialPath(deadline.courseId, deadline.source.materialId, {
+                  page: deadline.source.page,
+                })
               : `/courses/${deadline.courseId}`;
           return (
             <li key={deadline.id}>

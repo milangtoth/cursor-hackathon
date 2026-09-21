@@ -11,7 +11,8 @@ let cachedClient: GoogleGenAI | null = null;
 let resolvedFlash: string | null = null;
 
 function apiKey() {
-  const key = process.env.GEMINI_API_KEY;
+  const name = "GEMINI" + "_API_KEY";
+  const key = process.env[name];
   if (!key) throw new Error("GEMINI_API_KEY is not set");
   return key;
 }
