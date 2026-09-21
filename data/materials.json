@@ -97,5 +97,27 @@
     "pageCount": 2,
     "uploadedAt": "2026-09-15T08:00:00.000Z",
     "published": true
+  },
+  {
+    "id": "72548c75-a90a-4ba2-b630-a27ada862682",
+    "courseId": "db201",
+    "moduleId": "m-db201-sql",
+    "kind": "pdf",
+    "title": "Capstone brief (demo upload)",
+    "fileName": "1789995698658-demo-capstone-brief.pdf",
+    "pageCount": 1,
+    "uploadedAt": "2026-09-21T13:01:38.696Z",
+    "published": true
+  },
+  {
+    "id": "1b867dad-a247-43d4-93a4-3739f946dd40",
+    "courseId": "db201",
+    "moduleId": "m-db201-sql",
+    "kind": "pdf",
+    "title": "Capstone brief (demo upload)",
+    "fileName": "1789995736623-demo-capstone-brief.pdf",
+    "pageCount": 1,
+    "uploadedAt": "2026-09-21T13:02:16.628Z",
+    "published": true
   }
 ]

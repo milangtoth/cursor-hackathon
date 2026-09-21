@@ -20,7 +20,8 @@ export class IngestError extends Error {
 }
 
 function toPdfBytes(buffer: Buffer | Uint8Array): Uint8Array {
-  return buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
+  // Node Buffer subclasses Uint8Array; unpdf wants a plain Uint8Array.
+  return new Uint8Array(buffer);
 }
 
 function chunkPage(pageText: string, page: number): { page: number; text: string }[] {
