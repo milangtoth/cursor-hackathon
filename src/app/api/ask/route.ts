@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { askOutputGeminiSchema, askOutputSchema, generateJson } from "@/lib/gemini";
 import { getCurrentUser, HttpError, jsonError } from "@/lib/auth";
-import { retrieve } from "@/lib/retrieve";
+import { inferCourseId, retrieve } from "@/lib/retrieve";
 import { store } from "@/lib/store";
 import type { Citation, Deadline } from "@/lib/types";
 
@@ -93,25 +93,26 @@ export async function POST(req: Request) {
     const retrieveQuery = prior.length
       ? `${prior.map((t) => t.question).join(" ")} ${question}`
       : question;
+    const scopedCourseId = courseId ?? inferCourseId(retrieveQuery);
 
     return ndjsonStream(async (send) => {
-      const hits = await retrieve(retrieveQuery, courseId);
+      const hits = await retrieve(retrieveQuery, scopedCourseId);
       const retrieved = toCitations(hits);
       // Flush sources before generation so the dialog can paint them immediately.
       send({ type: "citations", citations: retrieved });
 
-      const deadlines = courseId
-        ? store.deadlinesByCourse(courseId)
+      const deadlines = scopedCourseId
+        ? store.deadlinesByCourse(scopedCourseId)
         : store.deadlines().filter((d) => user.role === "admin" || user.courseIds.includes(d.courseId));
 
       if (!hits.length && !deadlines.length) {
         store.logQuestion({
           userId: user.id,
-          courseId,
+          courseId: scopedCourseId,
           question,
           citationCount: 0,
         });
-        send({ type: "answer", answer: NOT_FOUND, citations: [] });
+        send({ type: "answer", answer: NOT_FOUND, citations: [], followUps: [] });
         return;
       }
 
@@ -134,6 +135,7 @@ export async function POST(req: Request) {
         prompt: `You answer a student using ONLY the numbered excerpts. The deadline list is extra context for date questions only.
 Cite only supplied chunk ids in citationIds. Do not invent ids.
 Keep the answer to 4 sentences or fewer.
+Also return followUps: 2 short next questions a student might ask, answerable from the excerpts. Empty array if nothing useful.
 
 If they ask to summarize or overview a course or document, write that overview from the excerpts. Do not refuse because no excerpt is labelled "summary". Mention deadlines only if they asked when something is due, or in one short sentence as part of a syllabus overview.
 
@@ -150,7 +152,7 @@ Question: ${question}`,
         schema: askOutputSchema,
         responseSchema: askOutputGeminiSchema,
         temperature: 0.15,
-        maxOutputTokens: 512,
+        maxOutputTokens: 640,
       });
 
       const citationIds = generated.citationIds.filter((id) => allowed.has(id));
@@ -161,12 +163,17 @@ Question: ${question}`,
 
       store.logQuestion({
         userId: user.id,
-        courseId,
+        courseId: scopedCourseId,
         question,
         citationCount: citations.length,
       });
 
-      send({ type: "answer", answer: generated.answer, citations });
+      send({
+        type: "answer",
+        answer: generated.answer,
+        citations,
+        followUps: generated.followUps.slice(0, 3),
+      });
     });
   } catch (error) {
     if (error instanceof HttpError) return jsonError(error);

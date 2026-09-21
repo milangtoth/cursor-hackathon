@@ -30,7 +30,7 @@ const STOP = new Set([
   "syllabus",
 ]);
 
-function inferCourseId(query: string): string | undefined {
+export function inferCourseId(query: string): string | undefined {
   const q = query.toLowerCase();
   if (/\bcs101\b|algorithms|data structures|sorting|graphs|visualiser/.test(q)) return "cs101";
   if (/\bdb201\b|database|sql|normali[sz]ation|er model/.test(q)) return "db201";

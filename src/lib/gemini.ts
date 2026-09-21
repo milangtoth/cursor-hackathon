@@ -138,6 +138,7 @@ export const summaryGeminiSchema: ResponseSchema = {
 export const askOutputSchema = z.object({
   answer: z.string(),
   citationIds: z.array(z.string()),
+  followUps: z.array(z.string()).max(3).default([]),
 });
 
 export const askOutputGeminiSchema: ResponseSchema = {
@@ -148,8 +149,12 @@ export const askOutputGeminiSchema: ResponseSchema = {
       type: "array",
       items: { type: "string", description: "chunk id from the supplied excerpts" },
     },
+    followUps: {
+      type: "array",
+      items: { type: "string", description: "short next question the student could ask" },
+    },
   },
-  required: ["answer", "citationIds"],
+  required: ["answer", "citationIds", "followUps"],
 };
 
 export type GenerateJsonArgs<T> = {

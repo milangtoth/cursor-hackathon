@@ -69,6 +69,7 @@ export interface Citation {
 export interface AskResponse {
   answer: string;
   citations: Citation[];
+  followUps?: string[];
 }
 
 export interface AskTurn {
