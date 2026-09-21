@@ -1,4 +1,4 @@
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import puppeteer from "puppeteer";
 import type { SourceCourse } from "../src/lib/types";
@@ -158,7 +158,14 @@ async function main() {
   for (const { dir, course } of courses) {
     for (const mod of course.modules) {
       for (const mat of mod.materials) {
-        const md = readFileSync(join(dir, mat.file), "utf8");
+        const outPath = join(outDir, mat.fileName);
+        const src = join(dir, mat.file);
+        if (mat.file.endsWith(".pdf")) {
+          copyFileSync(src, outPath);
+          console.log(`pdfs: copy ${mat.fileName}`);
+          continue;
+        }
+        const md = readFileSync(src, "utf8");
         await page.setContent(documentHtml(course.code, mdToHtml(md)), {
           waitUntil: "load",
         });
@@ -167,7 +174,6 @@ async function main() {
           printBackground: true,
           margin: { top: "16mm", bottom: "16mm", left: "14mm", right: "14mm" },
         });
-        const outPath = join(outDir, mat.fileName);
         writeFileSync(outPath, pdf);
         console.log(`pdfs: ${mat.fileName}`);
       }

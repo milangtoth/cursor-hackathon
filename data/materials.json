@@ -7,7 +7,7 @@
     "title": "Course syllabus",
     "fileName": "cs101-syllabus.pdf",
     "pageCount": 2,
-    "uploadedAt": "2026-09-21T13:21:38.209Z",
+    "uploadedAt": "2026-09-21T15:18:31.822Z",
     "published": true
   },
   {
@@ -18,7 +18,7 @@
     "title": "Lecture: Sorting algorithms",
     "fileName": "cs101-sorting.pdf",
     "pageCount": 2,
-    "uploadedAt": "2026-09-21T13:21:38.223Z",
+    "uploadedAt": "2026-09-21T15:18:31.837Z",
     "published": false
   },
   {
@@ -29,7 +29,7 @@
     "title": "Assignment 1: Sorting visualiser",
     "fileName": "cs101-assignment-1.pdf",
     "pageCount": 1,
-    "uploadedAt": "2026-09-21T13:21:38.232Z",
+    "uploadedAt": "2026-09-21T15:18:31.845Z",
     "published": true
   },
   {
@@ -40,7 +40,7 @@
     "title": "Lecture: Graphs",
     "fileName": "cs101-graphs.pdf",
     "pageCount": 1,
-    "uploadedAt": "2026-09-21T13:21:38.240Z",
+    "uploadedAt": "2026-09-21T15:18:31.854Z",
     "published": true
   },
   {
@@ -51,7 +51,7 @@
     "title": "Course syllabus",
     "fileName": "db201-syllabus.pdf",
     "pageCount": 2,
-    "uploadedAt": "2026-09-21T13:21:38.249Z",
+    "uploadedAt": "2026-09-21T15:18:31.864Z",
     "published": true
   },
   {
@@ -62,7 +62,7 @@
     "title": "Lecture: Relational algebra and SQL",
     "fileName": "db201-sql.pdf",
     "pageCount": 2,
-    "uploadedAt": "2026-09-21T13:21:38.271Z",
+    "uploadedAt": "2026-09-21T15:18:31.888Z",
     "published": true
   },
   {
@@ -73,7 +73,7 @@
     "title": "Lab 3: Writing queries",
     "fileName": "db201-lab-queries.pdf",
     "pageCount": 1,
-    "uploadedAt": "2026-09-21T13:21:38.282Z",
+    "uploadedAt": "2026-09-21T15:18:31.897Z",
     "published": true
   },
   {
@@ -84,7 +84,7 @@
     "title": "Assignment 1: ER modelling",
     "fileName": "db201-assignment-er.pdf",
     "pageCount": 1,
-    "uploadedAt": "2026-09-21T13:21:38.287Z",
+    "uploadedAt": "2026-09-21T15:18:31.903Z",
     "published": true
   },
   {
@@ -95,7 +95,205 @@
     "title": "Week 6 lecture notes: Normalisation",
     "fileName": "db201-week6-normalisation.pdf",
     "pageCount": 1,
-    "uploadedAt": "2026-09-21T13:21:38.295Z",
+    "uploadedAt": "2026-09-21T15:18:31.911Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-overview",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-assessment",
+    "kind": "pdf",
+    "title": "Course overview",
+    "fileName": "pr12-overview.pdf",
+    "pageCount": 1,
+    "uploadedAt": "2026-09-21T15:18:31.917Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-assignment",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-assessment",
+    "kind": "assignment",
+    "title": "Assignment Calculus (PI4)",
+    "fileName": "pr12-assignment.pdf",
+    "pageCount": 1,
+    "uploadedAt": "2026-09-21T15:18:31.924Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-mock",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-assessment",
+    "kind": "pdf",
+    "title": "PR12-2025-BP4 Calculus mock exam",
+    "fileName": "pr12-mock-exam.pdf",
+    "pageCount": 7,
+    "uploadedAt": "2026-09-21T15:18:31.961Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-mock-answers",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-assessment",
+    "kind": "pdf",
+    "title": "PR12-2025-BP4 Calculus mock answers",
+    "fileName": "pr12-mock-answers.pdf",
+    "pageCount": 9,
+    "uploadedAt": "2026-09-21T15:18:32.004Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-lec1",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-week1",
+    "kind": "pdf",
+    "title": "Week 1: Limits, Continuity and Derivatives",
+    "fileName": "pr12-lecture-week-1.pdf",
+    "pageCount": 20,
+    "uploadedAt": "2026-09-21T15:18:32.075Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-gd1",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-week1",
+    "kind": "pdf",
+    "title": "PR12 Calculus GD 1",
+    "fileName": "pr12-gd-week-1.pdf",
+    "pageCount": 6,
+    "uploadedAt": "2026-09-21T15:18:32.118Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-lec2",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-week2",
+    "kind": "pdf",
+    "title": "Week 2: Differentiation Techniques",
+    "fileName": "pr12-lecture-week-2.pdf",
+    "pageCount": 23,
+    "uploadedAt": "2026-09-21T15:18:32.180Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-gd2",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-week2",
+    "kind": "pdf",
+    "title": "PR12 Calculus GD 2",
+    "fileName": "pr12-gd-week-2.pdf",
+    "pageCount": 8,
+    "uploadedAt": "2026-09-21T15:18:32.210Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-lec3",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-week3",
+    "kind": "pdf",
+    "title": "Week 3: Optimization, Taylor and Maclaurin Series",
+    "fileName": "pr12-lecture-week-3.pdf",
+    "pageCount": 24,
+    "uploadedAt": "2026-09-21T15:18:32.288Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-gd3",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-week3",
+    "kind": "pdf",
+    "title": "PR12 Calculus GD 3",
+    "fileName": "pr12-gd-week-3.pdf",
+    "pageCount": 8,
+    "uploadedAt": "2026-09-21T15:18:32.314Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-lec4",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-week4",
+    "kind": "pdf",
+    "title": "Week 4: Indefinite Integration Techniques",
+    "fileName": "pr12-lecture-week-4.pdf",
+    "pageCount": 20,
+    "uploadedAt": "2026-09-21T15:18:32.363Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-gd4",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-week4",
+    "kind": "pdf",
+    "title": "PR12 Calculus GD 4",
+    "fileName": "pr12-gd-week-4.pdf",
+    "pageCount": 7,
+    "uploadedAt": "2026-09-21T15:18:32.391Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-lec5",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-week5",
+    "kind": "pdf",
+    "title": "Week 5: Definite Integrals and Differential Equations",
+    "fileName": "pr12-lecture-week-5.pdf",
+    "pageCount": 21,
+    "uploadedAt": "2026-09-21T15:18:32.452Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-gd5",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-week5",
+    "kind": "pdf",
+    "title": "PR12 Calculus GD 5",
+    "fileName": "pr12-gd-week-5.pdf",
+    "pageCount": 9,
+    "uploadedAt": "2026-09-21T15:18:32.481Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-lec6",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-week6",
+    "kind": "pdf",
+    "title": "Week 6: Multivariable Functions and Partial Derivatives",
+    "fileName": "pr12-lecture-week-6.pdf",
+    "pageCount": 18,
+    "uploadedAt": "2026-09-21T15:18:32.523Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-gd6",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-week6",
+    "kind": "pdf",
+    "title": "PR12 Calculus GD 6",
+    "fileName": "pr12-gd-week-6.pdf",
+    "pageCount": 8,
+    "uploadedAt": "2026-09-21T15:18:32.551Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-lec7",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-week7",
+    "kind": "pdf",
+    "title": "Week 7: Multivariable Optimization",
+    "fileName": "pr12-lecture-week-7.pdf",
+    "pageCount": 19,
+    "uploadedAt": "2026-09-21T15:18:32.594Z",
+    "published": true
+  },
+  {
+    "id": "mat-pr12-gd7",
+    "courseId": "pr12",
+    "moduleId": "m-pr12-week7",
+    "kind": "pdf",
+    "title": "PR12 Calculus GD 7",
+    "fileName": "pr12-gd-week-7.pdf",
+    "pageCount": 8,
+    "uploadedAt": "2026-09-21T15:18:32.626Z",
     "published": true
   }
 ]

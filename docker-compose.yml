@@ -1,0 +1,55 @@
+# Portainer stack. No git on the VPS — pull images from Docker Hub.
+#
+# On your machine:
+#   docker login
+#   docker build -t jesperknez/modern-lms:latest .
+#   docker push jesperknez/modern-lms:latest
+#
+# In Portainer: Stacks → add this file. Set DEEPSEEK_API_KEY, SESSION_SECRET,
+# CLOUDFLARE_TUNNEL_TOKEN in the stack environment.
+#
+# Cloudflare tunnel hostname modernlms.knez.nl → HTTP → http://app:3000
+# Host 3000 is countryverse; this stack uses 127.0.0.1:3001.
+
+services:
+  app:
+    image: jesperknez/modern-lms:latest
+    restart: always
+    environment:
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
+      SESSION_SECRET: ${SESSION_SECRET}
+    volumes:
+      - lms-data:/app/data
+      - lms-uploads:/app/uploads
+      - lms-content:/app/public/content
+    ports:
+      - "127.0.0.1:3001:3000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/login').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: always
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - app
+
+volumes:
+  lms-data:
+  lms-uploads:
+  lms-content:

@@ -73,5 +73,91 @@
         ]
       }
     ]
+  },
+  {
+    "id": "pr12",
+    "code": "PR12",
+    "title": "Calculus",
+    "teacherId": "u-maya",
+    "year": 2026,
+    "semester": "spring",
+    "block": 4,
+    "heroImage": "/heroes/pr12.png",
+    "modules": [
+      {
+        "id": "m-pr12-assessment",
+        "title": "Assessment",
+        "order": 1,
+        "materialIds": [
+          "mat-pr12-overview",
+          "mat-pr12-assignment",
+          "mat-pr12-mock",
+          "mat-pr12-mock-answers"
+        ]
+      },
+      {
+        "id": "m-pr12-week1",
+        "title": "Week 1: Limits, Continuity and Derivatives",
+        "order": 2,
+        "materialIds": [
+          "mat-pr12-lec1",
+          "mat-pr12-gd1"
+        ]
+      },
+      {
+        "id": "m-pr12-week2",
+        "title": "Week 2: Differentiation Techniques",
+        "order": 3,
+        "materialIds": [
+          "mat-pr12-lec2",
+          "mat-pr12-gd2"
+        ]
+      },
+      {
+        "id": "m-pr12-week3",
+        "title": "Week 3: Optimization, Taylor and Maclaurin Series",
+        "order": 4,
+        "materialIds": [
+          "mat-pr12-lec3",
+          "mat-pr12-gd3"
+        ]
+      },
+      {
+        "id": "m-pr12-week4",
+        "title": "Week 4: Indefinite Integration Techniques",
+        "order": 5,
+        "materialIds": [
+          "mat-pr12-lec4",
+          "mat-pr12-gd4"
+        ]
+      },
+      {
+        "id": "m-pr12-week5",
+        "title": "Week 5: Definite Integrals and Differential Equations",
+        "order": 6,
+        "materialIds": [
+          "mat-pr12-lec5",
+          "mat-pr12-gd5"
+        ]
+      },
+      {
+        "id": "m-pr12-week6",
+        "title": "Week 6: Multivariable Functions and Partial Derivatives",
+        "order": 7,
+        "materialIds": [
+          "mat-pr12-lec6",
+          "mat-pr12-gd6"
+        ]
+      },
+      {
+        "id": "m-pr12-week7",
+        "title": "Week 7: Multivariable Optimization",
+        "order": 8,
+        "materialIds": [
+          "mat-pr12-lec7",
+          "mat-pr12-gd7"
+        ]
+      }
+    ]
   }
 ]

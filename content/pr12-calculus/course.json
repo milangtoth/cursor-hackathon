@@ -1,0 +1,212 @@
+{
+  "id": "pr12",
+  "code": "PR12",
+  "title": "Calculus",
+  "teacherId": "u-maya",
+  "year": 2026,
+  "semester": "spring",
+  "block": 4,
+  "heroImage": "/heroes/pr12.png",
+  "modules": [
+    {
+      "id": "m-pr12-assessment",
+      "title": "Assessment",
+      "order": 1,
+      "materials": [
+        {
+          "id": "mat-pr12-overview",
+          "file": "00-overview.md",
+          "fileName": "pr12-overview.pdf",
+          "title": "Course overview",
+          "kind": "pdf"
+        },
+        {
+          "id": "mat-pr12-assignment",
+          "file": "01-assignment.md",
+          "fileName": "pr12-assignment.pdf",
+          "title": "Assignment Calculus (PI4)",
+          "kind": "assignment"
+        },
+        {
+          "id": "mat-pr12-mock",
+          "file": "files/pr12-mock-exam.pdf",
+          "fileName": "pr12-mock-exam.pdf",
+          "title": "PR12-2025-BP4 Calculus mock exam",
+          "kind": "pdf",
+          "skipDeadlineExtract": true
+        },
+        {
+          "id": "mat-pr12-mock-answers",
+          "file": "files/pr12-mock-answers.pdf",
+          "fileName": "pr12-mock-answers.pdf",
+          "title": "PR12-2025-BP4 Calculus mock answers",
+          "kind": "pdf",
+          "skipDeadlineExtract": true,
+          "skipSummary": true
+        }
+      ]
+    },
+    {
+      "id": "m-pr12-week1",
+      "title": "Week 1: Limits, Continuity and Derivatives",
+      "order": 2,
+      "materials": [
+        {
+          "id": "mat-pr12-lec1",
+          "file": "files/pr12-lecture-week-1.pdf",
+          "fileName": "pr12-lecture-week-1.pdf",
+          "title": "Week 1: Limits, Continuity and Derivatives",
+          "kind": "pdf",
+          "skipDeadlineExtract": true
+        },
+        {
+          "id": "mat-pr12-gd1",
+          "file": "files/pr12-gd-week-1.pdf",
+          "fileName": "pr12-gd-week-1.pdf",
+          "title": "PR12 Calculus GD 1",
+          "kind": "pdf",
+          "skipDeadlineExtract": true
+        }
+      ]
+    },
+    {
+      "id": "m-pr12-week2",
+      "title": "Week 2: Differentiation Techniques",
+      "order": 3,
+      "materials": [
+        {
+          "id": "mat-pr12-lec2",
+          "file": "files/pr12-lecture-week-2.pdf",
+          "fileName": "pr12-lecture-week-2.pdf",
+          "title": "Week 2: Differentiation Techniques",
+          "kind": "pdf",
+          "skipDeadlineExtract": true
+        },
+        {
+          "id": "mat-pr12-gd2",
+          "file": "files/pr12-gd-week-2.pdf",
+          "fileName": "pr12-gd-week-2.pdf",
+          "title": "PR12 Calculus GD 2",
+          "kind": "pdf",
+          "skipDeadlineExtract": true
+        }
+      ]
+    },
+    {
+      "id": "m-pr12-week3",
+      "title": "Week 3: Optimization, Taylor and Maclaurin Series",
+      "order": 4,
+      "materials": [
+        {
+          "id": "mat-pr12-lec3",
+          "file": "files/pr12-lecture-week-3.pdf",
+          "fileName": "pr12-lecture-week-3.pdf",
+          "title": "Week 3: Optimization, Taylor and Maclaurin Series",
+          "kind": "pdf",
+          "skipDeadlineExtract": true
+        },
+        {
+          "id": "mat-pr12-gd3",
+          "file": "files/pr12-gd-week-3.pdf",
+          "fileName": "pr12-gd-week-3.pdf",
+          "title": "PR12 Calculus GD 3",
+          "kind": "pdf",
+          "skipDeadlineExtract": true
+        }
+      ]
+    },
+    {
+      "id": "m-pr12-week4",
+      "title": "Week 4: Indefinite Integration Techniques",
+      "order": 5,
+      "materials": [
+        {
+          "id": "mat-pr12-lec4",
+          "file": "files/pr12-lecture-week-4.pdf",
+          "fileName": "pr12-lecture-week-4.pdf",
+          "title": "Week 4: Indefinite Integration Techniques",
+          "kind": "pdf",
+          "skipDeadlineExtract": true
+        },
+        {
+          "id": "mat-pr12-gd4",
+          "file": "files/pr12-gd-week-4.pdf",
+          "fileName": "pr12-gd-week-4.pdf",
+          "title": "PR12 Calculus GD 4",
+          "kind": "pdf",
+          "skipDeadlineExtract": true
+        }
+      ]
+    },
+    {
+      "id": "m-pr12-week5",
+      "title": "Week 5: Definite Integrals and Differential Equations",
+      "order": 6,
+      "materials": [
+        {
+          "id": "mat-pr12-lec5",
+          "file": "files/pr12-lecture-week-5.pdf",
+          "fileName": "pr12-lecture-week-5.pdf",
+          "title": "Week 5: Definite Integrals and Differential Equations",
+          "kind": "pdf",
+          "skipDeadlineExtract": true
+        },
+        {
+          "id": "mat-pr12-gd5",
+          "file": "files/pr12-gd-week-5.pdf",
+          "fileName": "pr12-gd-week-5.pdf",
+          "title": "PR12 Calculus GD 5",
+          "kind": "pdf",
+          "skipDeadlineExtract": true
+        }
+      ]
+    },
+    {
+      "id": "m-pr12-week6",
+      "title": "Week 6: Multivariable Functions and Partial Derivatives",
+      "order": 7,
+      "materials": [
+        {
+          "id": "mat-pr12-lec6",
+          "file": "files/pr12-lecture-week-6.pdf",
+          "fileName": "pr12-lecture-week-6.pdf",
+          "title": "Week 6: Multivariable Functions and Partial Derivatives",
+          "kind": "pdf",
+          "skipDeadlineExtract": true
+        },
+        {
+          "id": "mat-pr12-gd6",
+          "file": "files/pr12-gd-week-6.pdf",
+          "fileName": "pr12-gd-week-6.pdf",
+          "title": "PR12 Calculus GD 6",
+          "kind": "pdf",
+          "skipDeadlineExtract": true
+        }
+      ]
+    },
+    {
+      "id": "m-pr12-week7",
+      "title": "Week 7: Multivariable Optimization",
+      "order": 8,
+      "materials": [
+        {
+          "id": "mat-pr12-lec7",
+          "file": "files/pr12-lecture-week-7.pdf",
+          "fileName": "pr12-lecture-week-7.pdf",
+          "title": "Week 7: Multivariable Optimization",
+          "kind": "pdf",
+          "skipDeadlineExtract": true
+        },
+        {
+          "id": "mat-pr12-gd7",
+          "file": "files/pr12-gd-week-7.pdf",
+          "fileName": "pr12-gd-week-7.pdf",
+          "title": "PR12 Calculus GD 7",
+          "kind": "pdf",
+          "skipDeadlineExtract": true,
+          "skipSummary": true
+        }
+      ]
+    }
+  ]
+}

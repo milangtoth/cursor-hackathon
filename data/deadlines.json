@@ -1,6 +1,6 @@
 [
   {
-    "id": "07a74806-9e11-4721-b340-2735ef6f87e2",
+    "id": "581b79fb-dcff-4e85-be9a-013ecdb86a3e",
     "courseId": "cs101",
     "title": "Assignment 1: Sorting visualiser",
     "dueAt": "2026-10-14T23:59:00.000Z",
@@ -10,7 +10,7 @@
     }
   },
   {
-    "id": "faae8146-77b4-45b5-aed4-931ffd7ac786",
+    "id": "9f54f3be-6b3e-4b48-8123-9d9713d078c1",
     "courseId": "cs101",
     "title": "Graph project checkpoint",
     "dueAt": "2026-11-28T23:59:00.000Z",
@@ -20,7 +20,7 @@
     }
   },
   {
-    "id": "e6e405af-ed45-489d-8853-5457f4f8e79b",
+    "id": "2a22f971-a1bd-4c71-ac52-780e7ee41ef6",
     "courseId": "cs101",
     "title": "Final exam",
     "dueAt": "2026-12-12T09:00:00.000Z",
@@ -30,7 +30,7 @@
     }
   },
   {
-    "id": "340a08c8-03fc-47ae-a897-ec29f7ef0e67",
+    "id": "0d7c3af5-696d-4ed1-9212-03cc239b3372",
     "courseId": "db201",
     "title": "Assignment 1: ER modelling",
     "dueAt": "2026-10-14T23:59:00.000Z",
@@ -40,7 +40,7 @@
     }
   },
   {
-    "id": "a2ada3d3-f82a-4e4b-bcea-1fa4ed4146e5",
+    "id": "c42db7c5-9b0d-4adc-a625-0f4a9fe40018",
     "courseId": "db201",
     "title": "Midterm test",
     "dueAt": "2026-11-02T09:00:00.000Z",
@@ -50,7 +50,7 @@
     }
   },
   {
-    "id": "a9507efa-9b79-4833-b72a-f9bf57f02a87",
+    "id": "7aa16aeb-8a61-4eee-8582-aea5ff70c7e3",
     "courseId": "db201",
     "title": "Normalisation mini-project",
     "dueAt": "2026-11-20T23:59:00.000Z",
@@ -60,12 +60,42 @@
     }
   },
   {
-    "id": "8af0c87b-8e8d-4820-b90c-f6be3362a476",
+    "id": "e7f595ec-57ac-4b16-83ea-f63e4f20292c",
     "courseId": "db201",
     "title": "Final exam",
     "dueAt": "2026-12-15T09:00:00.000Z",
     "source": {
       "materialId": "mat-db201-syllabus",
+      "page": 1
+    }
+  },
+  {
+    "id": "3e917baf-fd3e-42be-98cb-fa7d5f26a805",
+    "courseId": "pr12",
+    "title": "PI4 draft assignment",
+    "dueAt": "2026-06-05T23:59:00.000Z",
+    "source": {
+      "materialId": "mat-pr12-assignment",
+      "page": 1
+    }
+  },
+  {
+    "id": "9a7fee91-3d37-4fa0-9f76-58c6c4e2458f",
+    "courseId": "pr12",
+    "title": "PI4 final assignment",
+    "dueAt": "2026-06-19T23:59:00.000Z",
+    "source": {
+      "materialId": "mat-pr12-assignment",
+      "page": 1
+    }
+  },
+  {
+    "id": "c1596150-7d65-4095-862d-e490f0b47899",
+    "courseId": "pr12",
+    "title": "PI4 resit",
+    "dueAt": "2026-08-21T23:59:00.000Z",
+    "source": {
+      "materialId": "mat-pr12-assignment",
       "page": 1
     }
   }

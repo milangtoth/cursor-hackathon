@@ -98,6 +98,27 @@ function attachCurated(materials: Material[], chunks: Chunk[]): {
       "mat-db201-syllabus",
       page("mat-db201-syllabus", ["15 December 2026"])
     ),
+    curatedDeadline(
+      "pr12",
+      "PI4 draft assignment",
+      "2026-06-05T23:59:00.000Z",
+      "mat-pr12-assignment",
+      page("mat-pr12-assignment", ["5 June 2026"])
+    ),
+    curatedDeadline(
+      "pr12",
+      "PI4 final assignment",
+      "2026-06-19T23:59:00.000Z",
+      "mat-pr12-assignment",
+      page("mat-pr12-assignment", ["19 June 2026"])
+    ),
+    curatedDeadline(
+      "pr12",
+      "PI4 resit",
+      "2026-08-21T23:59:00.000Z",
+      "mat-pr12-assignment",
+      page("mat-pr12-assignment", ["21 August 2026"])
+    ),
   ];
 
   const summaries: Record<string, string> = {
@@ -117,6 +138,10 @@ function attachCurated(materials: Material[], chunks: Chunk[]): {
       "Assignment 1: design an ER diagram for a public library (members, copies, loans, child guardians) and a relational mapping. Submit a PDF of the diagram plus a one-page mapping table before 23:59 on 14 October 2026. Pair work is not allowed; late work loses 10% per day and the assignment closes after three days.",
     "mat-db201-norm":
       "Week 6 notes walk a denormalised LoanSheet into 1NF, 2NF, and 3NF so titles live on Book rather than on every loan. The normalisation mini-project (events.csv to 3NF, a short anomalies note, and CREATE TABLE SQL) is due 20 November 2026 and is individual work.",
+    "mat-pr12-overview":
+      "PR12 Calculus (ADSAI, Zuyd, block 4 2025–2026) runs weeks 1–7: limits and derivatives, differentiation techniques, Taylor/optimization, indefinite integrals, definite integrals and DEs, multivariable functions and partials, then multivariable optimization. Each week has a lecture PDF and a GD sheet. Graded PI4 work: draft due 5 June 2026, final due 19 June 2026, resit due 21 August 2026.",
+    "mat-pr12-assignment":
+      "Hand in PI4 calculus as a PDF. Draft due 5 June 2026 at 23:59, final due 19 June 2026 at 23:59, resit due 21 August 2026 at 23:59. The draft is formative; the final is graded. Use the mock exam in Assessment before you submit.",
   };
 
   return { deadlines, summaries };

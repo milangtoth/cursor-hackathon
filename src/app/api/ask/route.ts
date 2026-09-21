@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { askOutputGeminiSchema, askOutputSchema, generateJson } from "@/lib/gemini";
 import { getCurrentUser, HttpError, jsonError } from "@/lib/auth";
-import { inferCourseId, retrieve } from "@/lib/retrieve";
+import { inferCourseId, isOverviewQuery, retrieve } from "@/lib/retrieve";
 import { store } from "@/lib/store";
 import type { Citation, Deadline } from "@/lib/types";
 
@@ -94,9 +94,10 @@ export async function POST(req: Request) {
       ? `${prior.map((t) => t.question).join(" ")} ${question}`
       : question;
     const scopedCourseId = courseId ?? inferCourseId(retrieveQuery);
+    const overview = isOverviewQuery(question) || isOverviewQuery(retrieveQuery);
 
     return ndjsonStream(async (send) => {
-      const hits = await retrieve(retrieveQuery, scopedCourseId);
+      const hits = await retrieve(retrieveQuery, scopedCourseId, { overview });
       const retrieved = toCitations(hits);
       // Flush sources before generation so the dialog can paint them immediately.
       send({ type: "citations", citations: retrieved });
@@ -118,10 +119,10 @@ export async function POST(req: Request) {
 
       const allowed = new Set(hits.map((h) => h.id));
       const excerpts = hits
-        .map(
-          (h, i) =>
-            `[${i + 1}] id=${h.id} page=${h.page} material=${h.materialId}\n${h.text}`
-        )
+        .map((h, i) => {
+          const title = store.material(h.materialId)?.title ?? h.materialId;
+          return `[${i + 1}] id=${h.id} page=${h.page} material=${title}\n${h.text}`;
+        })
         .join("\n\n");
 
       const thread =
@@ -131,10 +132,14 @@ export async function POST(req: Request) {
               .map((t) => `Student: ${t.question}\nYou: ${t.answer}`)
               .join("\n")}\n\n`;
 
+      const lengthRule = overview
+        ? "This is a course or document overview. Write a week-by-week overview from the excerpts. Name every week that appears; do not skip a week. One short sentence per week is fine, and you may go beyond 4 sentences."
+        : "Keep the answer to 4 sentences or fewer.";
+
       const generated = await generateJson({
         prompt: `You answer a student using ONLY the numbered excerpts. The deadline list is extra context for date questions only.
 Cite only supplied chunk ids in citationIds. Do not invent ids.
-Keep the answer to 4 sentences or fewer.
+${lengthRule}
 Also return followUps: 2 short next questions a student might ask, answerable from the excerpts. Empty array if nothing useful.
 
 If they ask to summarize or overview a course or document, write that overview from the excerpts. Do not refuse because no excerpt is labelled "summary". Mention deadlines only if they asked when something is due, or in one short sentence as part of a syllabus overview.
@@ -152,7 +157,7 @@ Question: ${question}`,
         schema: askOutputSchema,
         responseSchema: askOutputGeminiSchema,
         temperature: 0.15,
-        maxOutputTokens: 640,
+        maxOutputTokens: overview ? 1024 : 640,
       });
 
       const citationIds = generated.citationIds.filter((id) => allowed.has(id));

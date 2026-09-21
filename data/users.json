@@ -5,7 +5,8 @@
     "role": "student",
     "courseIds": [
       "cs101",
-      "db201"
+      "db201",
+      "pr12"
     ]
   },
   {
@@ -14,7 +15,8 @@
     "role": "teacher",
     "courseIds": [
       "cs101",
-      "db201"
+      "db201",
+      "pr12"
     ]
   },
   {
@@ -23,7 +25,8 @@
     "role": "admin",
     "courseIds": [
       "cs101",
-      "db201"
+      "db201",
+      "pr12"
     ]
   }
 ]

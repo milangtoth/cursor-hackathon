@@ -279,7 +279,7 @@ export function AskDialog({
       tool === "summarize"
         ? trimmed
           ? `Summarize this topic from my materials: ${trimmed}`
-          : "Summarize the key points in my materials."
+          : "Summarize this course week by week from my materials. Cover every week that has lecture notes; do not skip a week."
         : tool === "deadlines"
           ? trimmed
             ? `Find deadlines in my materials related to: ${trimmed}`
