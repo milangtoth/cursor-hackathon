@@ -4,8 +4,9 @@ import { CourseCard } from "@/components/course-card";
 import { materialPath } from "@/components/course-modules";
 import { CourseTermFilters } from "@/components/course-term-filters";
 import { filterCourses, parseTermFilters } from "@/components/course-term";
-import { formatDueAt } from "@/components/due-date";
+import { compareDueAt, formatDueAt, isOverdue } from "@/components/due-date";
 import { canViewDeadline, requireDemoUser } from "@/components/demo-session";
+import { Badge } from "@/components/ui/badge";
 import { homePathFor } from "@/lib/roles";
 import { store } from "@/lib/store";
 
@@ -14,12 +15,10 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
   if (user.role !== "student") redirect(homePathFor(user.role));
   const filters = parseTermFilters(await searchParams);
   const courses = filterCourses(store.coursesForUser(user), filters);
-  const now = Date.now();
   const upcoming = store
     .deadlines()
     .filter((deadline) => canViewDeadline(user, deadline))
-    .filter((deadline) => new Date(deadline.dueAt).getTime() >= now)
-    .sort((a, b) => a.dueAt.localeCompare(b.dueAt))
+    .sort((a, b) => compareDueAt(a.dueAt, b.dueAt))
     .slice(0, 5);
 
   return (
@@ -59,6 +58,7 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
           <ul className="flex flex-col gap-2">
             {upcoming.map((deadline) => {
               const course = store.course(deadline.courseId);
+              const overdue = isOverdue(deadline.dueAt);
               const href =
                 "materialId" in deadline.source
                   ? materialPath(deadline.courseId, deadline.source.materialId, {
@@ -70,20 +70,27 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
                   <Link
                     href={href}
                     prefetch
-                    className="hover:bg-muted/40 flex items-baseline justify-between gap-4 rounded-lg border px-3 py-2 text-sm transition-colors"
+                    className={`hover:bg-muted/40 flex items-center justify-between gap-4 rounded-lg border px-3 py-2 text-sm transition-colors ${
+                      overdue ? "border-destructive/40 bg-destructive/5" : ""
+                    }`}
                   >
-                    <span className="min-w-0">
-                      <span className="font-medium">{deadline.title}</span>
-                      {course ? (
-                        <span className="text-muted-foreground">
-                          {" "}
-                          · {course.code}
-                        </span>
+                    <span className="flex min-w-0 items-center gap-2">
+                      <span className="min-w-0">
+                        <span className="font-medium">{deadline.title}</span>
+                        {course ? (
+                          <span className="text-muted-foreground">
+                            {" "}
+                            · {course.code}
+                          </span>
+                        ) : null}
+                      </span>
+                      {overdue ? (
+                        <Badge variant="destructive">Overdue</Badge>
                       ) : null}
                     </span>
                     <time
                       dateTime={deadline.dueAt}
-                      className="text-muted-foreground shrink-0"
+                      className={`shrink-0 ${overdue ? "text-destructive" : "text-muted-foreground"}`}
                     >
                       {formatDueAt(deadline.dueAt)}
                     </time>

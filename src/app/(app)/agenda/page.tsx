@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
-import { canViewDeadline, requireDemoUser } from "@/components/demo-session";
 import { AgendaList } from "@/components/agenda-list";
 import { materialPath } from "@/components/course-modules";
+import { compareDueAt } from "@/components/due-date";
+import { canViewDeadline, requireDemoUser } from "@/components/demo-session";
 import { homePathFor } from "@/lib/roles";
 import { store } from "@/lib/store";
 
@@ -11,7 +12,7 @@ export default async function AgendaPage() {
   const items = store
     .deadlines()
     .filter((deadline) => canViewDeadline(user, deadline))
-    .sort((a, b) => a.dueAt.localeCompare(b.dueAt))
+    .sort((a, b) => compareDueAt(a.dueAt, b.dueAt))
     .map((deadline) => {
       const course = store.course(deadline.courseId);
       const href =
