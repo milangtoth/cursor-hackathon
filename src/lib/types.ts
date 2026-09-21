@@ -58,6 +58,7 @@ export interface Citation {
   materialTitle: string;
   page: number;
   snippet: string;
+  courseId: string;
 }
 
 export interface AskResponse {

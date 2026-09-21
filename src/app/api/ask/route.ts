@@ -38,12 +38,12 @@ export async function POST(req: Request) {
     }
 
     const { question, courseId } = parsed.data;
-    const hasIndex = (courseId ? store.chunksByCourse(courseId) : store.chunks()).some(
-      (c) => c.embedding.length > 0
-    );
-    const hits = hasIndex ? await retrieve(question, courseId) : [];
+    const hits = await retrieve(question, courseId);
+    const deadlines = courseId
+      ? store.deadlinesByCourse(courseId)
+      : store.deadlines().filter((d) => user.role === "admin" || user.courseIds.includes(d.courseId));
 
-    if (!hits.length) {
+    if (!hits.length && !deadlines.length) {
       store.logQuestion({
         userId: user.id,
         courseId,
@@ -53,10 +53,6 @@ export async function POST(req: Request) {
       const empty: AskResponse = { answer: NOT_FOUND, citations: [] };
       return Response.json(empty);
     }
-
-    const deadlines = courseId
-      ? store.deadlinesByCourse(courseId)
-      : store.deadlines().filter((d) => user.role === "admin" || user.courseIds.includes(d.courseId));
 
     const allowed = new Set(hits.map((h) => h.id));
     const excerpts = hits
@@ -95,6 +91,7 @@ Question: ${question}`,
         chunkId: chunk.id,
         materialId: chunk.materialId,
         materialTitle: material?.title ?? chunk.materialId,
+        courseId: chunk.courseId,
         page: chunk.page,
         snippet: snippet(chunk.text),
       });

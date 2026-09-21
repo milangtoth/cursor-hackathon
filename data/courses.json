@@ -10,19 +10,26 @@
         "id": "m-cs101-week1",
         "title": "Week 1: Foundations",
         "order": 1,
-        "materialIds": ["mat-cs101-syllabus"]
+        "materialIds": [
+          "mat-cs101-syllabus"
+        ]
       },
       {
         "id": "m-cs101-week3",
         "title": "Week 3: Sorting",
         "order": 2,
-        "materialIds": ["mat-cs101-sorting", "mat-cs101-a1"]
+        "materialIds": [
+          "mat-cs101-sorting",
+          "mat-cs101-a1"
+        ]
       },
       {
         "id": "m-cs101-week6",
         "title": "Week 6: Graphs",
         "order": 3,
-        "materialIds": ["mat-cs101-graphs"]
+        "materialIds": [
+          "mat-cs101-graphs"
+        ]
       }
     ]
   },
@@ -37,19 +44,29 @@
         "id": "m-db201-intro",
         "title": "Introduction",
         "order": 1,
-        "materialIds": ["mat-db201-syllabus"]
+        "materialIds": [
+          "mat-db201-syllabus"
+        ]
       },
       {
         "id": "m-db201-sql",
         "title": "SQL",
         "order": 2,
-        "materialIds": ["mat-db201-sql", "mat-db201-lab"]
+        "materialIds": [
+          "mat-db201-sql",
+          "mat-db201-lab",
+          "72548c75-a90a-4ba2-b630-a27ada862682",
+          "1b867dad-a247-43d4-93a4-3739f946dd40"
+        ]
       },
       {
         "id": "m-db201-design",
         "title": "Design & Normalisation",
         "order": 3,
-        "materialIds": ["mat-db201-er", "mat-db201-norm"]
+        "materialIds": [
+          "mat-db201-er",
+          "mat-db201-norm"
+        ]
       }
     ]
   }
