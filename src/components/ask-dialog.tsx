@@ -38,6 +38,12 @@ type AskEvent =
   | { type: "answer"; answer: string; citations: Citation[] }
   | { type: "error"; error: string };
 
+type Turn = {
+  question: string;
+  answer: string | null;
+  citations: Citation[];
+};
+
 async function readAskEvents(
   res: Response,
   onEvent: (event: AskEvent) => void
@@ -83,23 +89,29 @@ async function readAskEvents(
   if (buf.trim()) onEvent(JSON.parse(buf) as AskEvent);
 }
 
+function patchLastTurn(turns: Turn[], patch: Partial<Turn>): Turn[] {
+  if (turns.length === 0) return turns;
+  const next = [...turns];
+  next[next.length - 1] = { ...next[next.length - 1], ...patch };
+  return next;
+}
+
 export function AskDialog() {
   const [open, setOpen] = useState(false);
-  const [question, setQuestion] = useState("");
+  const [draft, setDraft] = useState("");
   const [pending, setPending] = useState(false);
-  const [answer, setAnswer] = useState<string | null>(null);
-  const [citations, setCitations] = useState<Citation[]>([]);
+  const [turns, setTurns] = useState<Turn[]>([]);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  function resetAsk() {
+  function resetThread() {
     abortRef.current?.abort();
     abortRef.current = null;
-    setQuestion("");
-    setPending(false);
-    setAnswer(null);
-    setCitations([]);
+    setTurns([]);
+    setDraft("");
     setError(null);
+    setPending(false);
   }
 
   useEffect(() => {
@@ -113,16 +125,18 @@ export function AskDialog() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  useEffect(() => {
+    if (open && !pending) inputRef.current?.focus();
+  }, [open, pending, turns.length]);
+
   async function ask(nextQuestion: string) {
     const trimmed = nextQuestion.trim();
     if (!trimmed) return;
 
     if (tryCalc(trimmed) != null) {
       abortRef.current?.abort();
-      setQuestion(trimmed);
+      setDraft(trimmed);
       setPending(false);
-      setAnswer(null);
-      setCitations([]);
       setError(null);
       return;
     }
@@ -131,17 +145,24 @@ export function AskDialog() {
     const ac = new AbortController();
     abortRef.current = ac;
 
-    setQuestion(trimmed);
+    const history = turns
+      .filter((turn) => turn.answer)
+      .slice(-4)
+      .map((turn) => ({ question: turn.question, answer: turn.answer! }));
+
+    setDraft("");
     setPending(true);
-    setAnswer(null);
-    setCitations([]);
     setError(null);
+    setTurns((prev) => [
+      ...prev.filter((turn) => turn.answer != null),
+      { question: trimmed, answer: null, citations: [] },
+    ]);
 
     try {
       const res = await fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: trimmed }),
+        body: JSON.stringify({ question: trimmed, history }),
         signal: ac.signal,
       });
 
@@ -152,10 +173,16 @@ export function AskDialog() {
 
       await readAskEvents(res, (event) => {
         if (event.type === "citations") {
-          setCitations(event.citations);
+          setTurns((prev) => patchLastTurn(prev, { citations: event.citations }));
         } else if (event.type === "answer") {
-          setAnswer(event.answer);
-          if (event.citations.length) setCitations(event.citations);
+          setTurns((prev) =>
+            patchLastTurn(prev, {
+              answer: event.answer,
+              citations: event.citations.length
+                ? event.citations
+                : prev[prev.length - 1]?.citations ?? [],
+            })
+          );
         } else if (event.type === "error") {
           setError(event.error);
         }
@@ -168,15 +195,39 @@ export function AskDialog() {
     }
   }
 
-  const calc = tryCalc(question);
-  const hasResults = pending || answer != null || citations.length > 0;
+  const calc = tryCalc(draft);
+  const hasResults = pending || turns.length > 0;
+  const followUp = turns.some((turn) => turn.answer);
+
+  const form = (
+    <form
+      className="flex gap-2"
+      onSubmit={(event) => {
+        event.preventDefault();
+        void ask(draft);
+      }}
+    >
+      <Input
+        ref={inputRef}
+        value={draft}
+        onChange={(event) => setDraft(event.target.value)}
+        placeholder={
+          followUp ? "Ask a follow-up…" : "Ask, or type 12*8"
+        }
+        autoFocus
+      />
+      <Button type="submit" disabled={pending || !draft.trim()}>
+        {pending ? "Asking…" : followUp ? "Follow up" : "Ask"}
+      </Button>
+    </form>
+  );
 
   return (
     <Dialog
       open={open}
       onOpenChange={(next) => {
         setOpen(next);
-        if (!next) resetAsk();
+        if (!next) resetThread();
       }}
     >
       <DialogTrigger
@@ -201,23 +252,6 @@ export function AskDialog() {
             Course answers with citations — or type 12*8 like Spotlight.
           </DialogDescription>
         </DialogHeader>
-        <form
-          className="flex gap-2"
-          onSubmit={(event) => {
-            event.preventDefault();
-            void ask(question);
-          }}
-        >
-          <Input
-            value={question}
-            onChange={(event) => setQuestion(event.target.value)}
-            placeholder="Ask, or type 12*8"
-            autoFocus
-          />
-          <Button type="submit" disabled={pending || !question.trim()}>
-            {pending ? "Asking…" : "Ask"}
-          </Button>
-        </form>
         {calc != null ? (
           <div className="flex items-baseline gap-3 rounded-lg border px-3 py-3">
             <Calculator className="text-muted-foreground size-4 shrink-0" />
@@ -232,49 +266,72 @@ export function AskDialog() {
         {error ? (
           <p className="text-destructive text-sm">{friendlyAskError(error)}</p>
         ) : null}
-        {calc != null ? null : !hasResults ? (
-          <div className="flex flex-col gap-2">
-            <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-              Try asking
-            </p>
-            <div className="flex flex-col gap-1.5">
-              {SUGGESTIONS.map((suggestion) => (
-                <Button
-                  key={suggestion}
-                  type="button"
-                  variant="ghost"
-                  className="h-auto justify-start px-2.5 py-2 text-left whitespace-normal"
-                  onClick={() => void ask(suggestion)}
-                >
-                  {suggestion}
-                </Button>
+        {calc != null ? (
+          form
+        ) : !hasResults ? (
+          <>
+            {form}
+            <div className="flex flex-col gap-2">
+              <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                Try asking
+              </p>
+              <div className="flex flex-col gap-1.5">
+                {SUGGESTIONS.map((suggestion) => (
+                  <Button
+                    key={suggestion}
+                    type="button"
+                    variant="ghost"
+                    className="h-auto justify-start px-2.5 py-2 text-left whitespace-normal"
+                    onClick={() => void ask(suggestion)}
+                  >
+                    {suggestion}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="flex max-h-[min(22rem,46vh)] flex-col gap-5 overflow-y-auto">
+              {turns.map((turn, index) => (
+                <div key={`${index}-${turn.question}`} className="flex flex-col gap-3">
+                  <AnswerCard
+                    question={turn.question}
+                    answer={turn.answer}
+                    pending={pending && index === turns.length - 1}
+                  />
+                  {turn.citations.length > 0 ? (
+                    <div className="flex flex-col gap-2">
+                      <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                        Sources
+                      </p>
+                      {turn.citations.map((citation) => (
+                        <CitationChip
+                          key={`${index}-${citation.chunkId}`}
+                          citation={citation}
+                          onNavigate={() => setOpen(false)}
+                        />
+                      ))}
+                    </div>
+                  ) : pending && index === turns.length - 1 ? (
+                    <p className="text-muted-foreground text-sm">
+                      Searching materials…
+                    </p>
+                  ) : null}
+                </div>
               ))}
             </div>
-          </div>
-        ) : (
-          <div className="flex max-h-[min(24rem,50vh)] flex-col gap-4 overflow-y-auto">
-            {citations.length > 0 || answer != null ? (
-              <>
-                <AnswerCard answer={answer} pending={pending} />
-                {citations.length > 0 ? (
-                  <div className="flex flex-col gap-2">
-                    <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                      Sources
-                    </p>
-                    {citations.map((citation) => (
-                      <CitationChip
-                        key={citation.chunkId}
-                        citation={citation}
-                        onNavigate={() => setOpen(false)}
-                      />
-                    ))}
-                  </div>
-                ) : null}
-              </>
-            ) : (
-              <p className="text-muted-foreground text-sm">Searching materials…</p>
-            )}
-          </div>
+            <div className="flex flex-col gap-2">
+              {form}
+              <button
+                type="button"
+                className="text-muted-foreground hover:text-foreground self-start text-xs"
+                onClick={resetThread}
+              >
+                New question
+              </button>
+            </div>
+          </>
         )}
       </DialogContent>
     </Dialog>

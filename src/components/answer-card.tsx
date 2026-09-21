@@ -3,9 +3,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 const NOT_FOUND = "not found in your materials";
 
 export function AnswerCard({
+  question,
   answer,
   pending,
 }: {
+  question?: string;
   answer: string | null;
   pending: boolean;
 }) {
@@ -15,9 +17,13 @@ export function AnswerCard({
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-        Answer
-      </p>
+      {question ? (
+        <p className="text-sm font-medium">{question}</p>
+      ) : (
+        <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+          Answer
+        </p>
+      )}
       {answer ? (
         <p
           className={
