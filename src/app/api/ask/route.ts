@@ -3,7 +3,7 @@ import { askOutputGeminiSchema, askOutputSchema, generateJson } from "@/lib/gemi
 import { getCurrentUser, HttpError, jsonError } from "@/lib/auth";
 import { retrieve } from "@/lib/retrieve";
 import { store } from "@/lib/store";
-import type { AskResponse, Citation, Deadline } from "@/lib/types";
+import type { Citation, Deadline } from "@/lib/types";
 
 const bodySchema = z.object({
   question: z.string().min(1),
@@ -27,6 +27,48 @@ function snippet(text: string) {
   return cleaned.length > 220 ? `${cleaned.slice(0, 217)}...` : cleaned;
 }
 
+function toCitations(
+  chunks: { id: string; courseId: string; materialId: string; page: number; text: string }[]
+): Citation[] {
+  return chunks.map((chunk) => {
+    const material = store.material(chunk.materialId);
+    return {
+      chunkId: chunk.id,
+      materialId: chunk.materialId,
+      materialTitle: material?.title ?? chunk.materialId,
+      page: chunk.page,
+      snippet: snippet(chunk.text),
+      courseId: chunk.courseId,
+    };
+  });
+}
+
+function ndjsonStream(write: (send: (event: unknown) => void) => Promise<void>) {
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    async start(controller) {
+      const send = (event: unknown) => {
+        controller.enqueue(encoder.encode(`${JSON.stringify(event)}\n`));
+      };
+      try {
+        await write(send);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "ask failed";
+        send({ type: "error", error: message });
+      } finally {
+        controller.close();
+      }
+    },
+  });
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "application/x-ndjson; charset=utf-8",
+      "Cache-Control": "no-cache, no-transform",
+      "X-Accel-Buffering": "no",
+    },
+  });
+}
+
 export async function POST(req: Request) {
   try {
     const user = await getCurrentUser();
@@ -38,36 +80,41 @@ export async function POST(req: Request) {
     }
 
     const { question, courseId } = parsed.data;
-    const hasIndex = (courseId ? store.chunksByCourse(courseId) : store.chunks()).some(
-      (c) => c.embedding.length > 0
-    );
-    const hits = hasIndex ? await retrieve(question, courseId) : [];
 
-    if (!hits.length) {
-      store.logQuestion({
-        userId: user.id,
-        courseId,
-        question,
-        citationCount: 0,
-      });
-      const empty: AskResponse = { answer: NOT_FOUND, citations: [] };
-      return Response.json(empty);
-    }
+    return ndjsonStream(async (send) => {
+      const hasIndex = (courseId ? store.chunksByCourse(courseId) : store.chunks()).some(
+        (c) => c.embedding.length > 0
+      );
+      const hits = hasIndex ? await retrieve(question, courseId) : [];
+      const retrieved = toCitations(hits);
+      // Flush sources before generation so the dialog can paint them immediately.
+      send({ type: "citations", citations: retrieved });
 
-    const deadlines = courseId
-      ? store.deadlinesByCourse(courseId)
-      : store.deadlines().filter((d) => user.role === "admin" || user.courseIds.includes(d.courseId));
+      if (!hits.length) {
+        store.logQuestion({
+          userId: user.id,
+          courseId,
+          question,
+          citationCount: 0,
+        });
+        send({ type: "answer", answer: NOT_FOUND, citations: [] });
+        return;
+      }
 
-    const allowed = new Set(hits.map((h) => h.id));
-    const excerpts = hits
-      .map(
-        (h, i) =>
-          `[${i + 1}] id=${h.id} page=${h.page} material=${h.materialId}\n${h.text}`
-      )
-      .join("\n\n");
+      const deadlines = courseId
+        ? store.deadlinesByCourse(courseId)
+        : store.deadlines().filter((d) => user.role === "admin" || user.courseIds.includes(d.courseId));
 
-    const generated = await generateJson({
-      prompt: `You answer a student using ONLY the numbered excerpts and the deadline list.
+      const allowed = new Set(hits.map((h) => h.id));
+      const excerpts = hits
+        .map(
+          (h, i) =>
+            `[${i + 1}] id=${h.id} page=${h.page} material=${h.materialId}\n${h.text}`
+        )
+        .join("\n\n");
+
+      const generated = await generateJson({
+        prompt: `You answer a student using ONLY the numbered excerpts and the deadline list.
 Cite only supplied chunk ids in citationIds. Do not invent ids.
 Keep the answer to 4 sentences or fewer.
 If the excerpts and deadlines do not contain the answer, say you could not find it in the materials.
@@ -79,36 +126,27 @@ Excerpts:
 ${excerpts}
 
 Question: ${question}`,
-      schema: askOutputSchema,
-      responseSchema: askOutputGeminiSchema,
-      temperature: 0.15,
-      maxOutputTokens: 512,
-    });
-
-    const citationIds = generated.citationIds.filter((id) => allowed.has(id));
-    const citations: Citation[] = [];
-    for (const id of citationIds) {
-      const chunk = hits.find((h) => h.id === id);
-      if (!chunk) continue;
-      const material = store.material(chunk.materialId);
-      citations.push({
-        chunkId: chunk.id,
-        materialId: chunk.materialId,
-        materialTitle: material?.title ?? chunk.materialId,
-        page: chunk.page,
-        snippet: snippet(chunk.text),
+        schema: askOutputSchema,
+        responseSchema: askOutputGeminiSchema,
+        temperature: 0.15,
+        maxOutputTokens: 512,
       });
-    }
 
-    store.logQuestion({
-      userId: user.id,
-      courseId,
-      question,
-      citationCount: citations.length,
+      const citationIds = generated.citationIds.filter((id) => allowed.has(id));
+      const citedHits = citationIds
+        .map((id) => hits.find((h) => h.id === id))
+        .filter((h): h is (typeof hits)[number] => h != null);
+      const citations = citedHits.length ? toCitations(citedHits) : retrieved;
+
+      store.logQuestion({
+        userId: user.id,
+        courseId,
+        question,
+        citationCount: citations.length,
+      });
+
+      send({ type: "answer", answer: generated.answer, citations });
     });
-
-    const body: AskResponse = { answer: generated.answer, citations };
-    return Response.json(body);
   } catch (error) {
     if (error instanceof HttpError) return jsonError(error);
     const message = error instanceof Error ? error.message : "ask failed";
