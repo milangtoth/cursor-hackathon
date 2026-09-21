@@ -7,9 +7,15 @@ import {
 } from "@/components/ui/card";
 import type { Course } from "@/lib/types";
 
-export function CourseCard({ course }: { course: Course }) {
+export function CourseCard({
+  course,
+  href,
+}: {
+  course: Course;
+  href?: string;
+}) {
   return (
-    <Link href={`/courses/${course.id}`} prefetch>
+    <Link href={href ?? `/courses/${course.id}`} prefetch>
       <Card className="hover:bg-muted/40 h-full transition-colors">
         {course.heroImage ? (
           <img

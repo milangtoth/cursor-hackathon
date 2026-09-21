@@ -18,7 +18,7 @@ export default async function TeacherPage() {
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         {courses.map((course) => (
-          <CourseCard key={course.id} course={course} />
+          <CourseCard key={course.id} course={course} href={`/teacher/${course.id}`} />
         ))}
       </div>
     </div>
