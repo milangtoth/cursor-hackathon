@@ -174,23 +174,35 @@ export async function generateJson<T>(args: GenerateJsonArgs<T>): Promise<T> {
     maxOutputTokens: args.maxOutputTokens,
   };
 
-  let text: string;
-  if (resolvedFlash) {
-    text = await generateWithModel(resolvedFlash, callArgs);
-  } else {
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      text = await generateWithModel(FLASH_PRIMARY, callArgs);
-      resolvedFlash = FLASH_PRIMARY;
-    } catch (primaryErr) {
-      try {
-        text = await generateWithModel(FLASH_FALLBACK, callArgs);
-        resolvedFlash = FLASH_FALLBACK;
-      } catch {
-        throw primaryErr;
+      let text: string;
+      if (resolvedFlash) {
+        text = await generateWithModel(resolvedFlash, callArgs);
+      } else {
+        try {
+          text = await generateWithModel(FLASH_PRIMARY, callArgs);
+          resolvedFlash = FLASH_PRIMARY;
+        } catch (primaryErr) {
+          try {
+            text = await generateWithModel(FLASH_FALLBACK, callArgs);
+            resolvedFlash = FLASH_FALLBACK;
+          } catch {
+            throw primaryErr;
+          }
+        }
       }
+      const parsed = parseJsonText(text);
+      return args.schema.parse(parsed);
+    } catch (err) {
+      lastErr = err;
+      const msg = err instanceof Error ? err.message : String(err);
+      if (!msg.includes("503") && !msg.includes("UNAVAILABLE") && !msg.includes("high demand")) {
+        throw err;
+      }
+      await new Promise((r) => setTimeout(r, 1500 * (attempt + 1)));
     }
   }
-
-  const parsed = parseJsonText(text);
-  return args.schema.parse(parsed);
+  throw lastErr;
 }
