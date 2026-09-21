@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "smoke": "tsx scripts/smoke-gemini.ts",
+    "embed-fixtures": "tsx scripts/embed-fixtures.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
