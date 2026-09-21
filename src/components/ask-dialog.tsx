@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Search } from "lucide-react";
+import { Calculator, Search } from "lucide-react";
 import { AnswerCard } from "@/components/answer-card";
 import { CitationChip } from "@/components/citation-chip";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { formatCalc, tryCalc } from "@/lib/calc";
 import type { Citation } from "@/lib/types";
 
 const SUGGESTIONS = [
@@ -116,6 +117,16 @@ export function AskDialog() {
     const trimmed = nextQuestion.trim();
     if (!trimmed) return;
 
+    if (tryCalc(trimmed) != null) {
+      abortRef.current?.abort();
+      setQuestion(trimmed);
+      setPending(false);
+      setAnswer(null);
+      setCitations([]);
+      setError(null);
+      return;
+    }
+
     abortRef.current?.abort();
     const ac = new AbortController();
     abortRef.current = ac;
@@ -157,6 +168,7 @@ export function AskDialog() {
     }
   }
 
+  const calc = tryCalc(question);
   const hasResults = pending || answer != null || citations.length > 0;
 
   return (
@@ -186,7 +198,7 @@ export function AskDialog() {
         <DialogHeader>
           <DialogTitle>Ask your materials</DialogTitle>
           <DialogDescription>
-            Answers are grounded in your course files, with a link to the page they came from.
+            Course answers with citations — or type 12*8 like Spotlight.
           </DialogDescription>
         </DialogHeader>
         <form
@@ -199,17 +211,28 @@ export function AskDialog() {
           <Input
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
-            placeholder="When is my deadline for Databases?"
+            placeholder="Ask, or type 12*8"
             autoFocus
           />
           <Button type="submit" disabled={pending || !question.trim()}>
             {pending ? "Asking…" : "Ask"}
           </Button>
         </form>
+        {calc != null ? (
+          <div className="flex items-baseline gap-3 rounded-lg border px-3 py-3">
+            <Calculator className="text-muted-foreground size-4 shrink-0" />
+            <div className="min-w-0">
+              <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                Calculator
+              </p>
+              <p className="font-mono text-2xl tracking-tight">{formatCalc(calc)}</p>
+            </div>
+          </div>
+        ) : null}
         {error ? (
           <p className="text-destructive text-sm">{friendlyAskError(error)}</p>
         ) : null}
-        {!hasResults ? (
+        {calc != null ? null : !hasResults ? (
           <div className="flex flex-col gap-2">
             <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
               Try asking
