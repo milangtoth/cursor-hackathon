@@ -4,6 +4,7 @@
     "code": "CS101",
     "title": "Algorithms & Data Structures",
     "teacherId": "u-maya",
+    "heroImage": "/heroes/cs101.png",
     "modules": [
       {
         "id": "m-cs101-week1",
@@ -30,6 +31,7 @@
     "code": "DB201",
     "title": "Introduction to Databases",
     "teacherId": "u-maya",
+    "heroImage": "/heroes/db201.png",
     "modules": [
       {
         "id": "m-db201-intro",

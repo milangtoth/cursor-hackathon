@@ -12,6 +12,7 @@ export interface Course {
   code: string;
   title: string;
   teacherId: string;
+  heroImage?: string;
   modules: Module[];
 }
 
@@ -106,6 +107,7 @@ export interface SourceCourse {
   code: string;
   title: string;
   teacherId: string;
+  heroImage?: string;
   modules: {
     id: string;
     title: string;
