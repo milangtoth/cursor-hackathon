@@ -4,6 +4,9 @@
     "code": "CS101",
     "title": "Algorithms & Data Structures",
     "teacherId": "u-maya",
+    "year": 2026,
+    "semester": "fall",
+    "block": 1,
     "heroImage": "/heroes/cs101.png",
     "modules": [
       {
@@ -38,6 +41,9 @@
     "code": "DB201",
     "title": "Introduction to Databases",
     "teacherId": "u-maya",
+    "year": 2026,
+    "semester": "fall",
+    "block": 2,
     "heroImage": "/heroes/db201.png",
     "modules": [
       {

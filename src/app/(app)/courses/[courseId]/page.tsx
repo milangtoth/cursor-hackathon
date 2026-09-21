@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { requireDemoUser } from "@/components/demo-session";
 import { CourseHero } from "@/components/course-hero";
+import { courseTermLabel } from "@/components/course-term";
 import { visibleCourseModules, weekPath } from "@/components/course-modules";
 import {
   Card,
@@ -31,6 +32,9 @@ export default async function CoursePage({
             {course.code}
           </p>
           <h1 className="text-2xl font-semibold tracking-tight">{course.title}</h1>
+          <p className="text-muted-foreground mt-1 text-sm">
+            {courseTermLabel(course)}
+          </p>
           <p className="text-muted-foreground mt-2 text-sm">
             Open a week to see its lectures, assignments, and other materials.
           </p>

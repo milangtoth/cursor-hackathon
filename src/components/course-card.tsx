@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { courseTermLabel } from "@/components/course-term";
 import {
   Card,
   CardDescription,
@@ -7,9 +8,15 @@ import {
 } from "@/components/ui/card";
 import type { Course } from "@/lib/types";
 
-export function CourseCard({ course }: { course: Course }) {
+export function CourseCard({
+  course,
+  href,
+}: {
+  course: Course;
+  href?: string;
+}) {
   return (
-    <Link href={`/courses/${course.id}`} prefetch>
+    <Link href={href ?? `/courses/${course.id}`} prefetch>
       <Card className="hover:bg-muted/40 h-full transition-colors">
         {course.heroImage ? (
           <img
@@ -21,7 +28,9 @@ export function CourseCard({ course }: { course: Course }) {
         <CardHeader>
           <CardDescription>{course.code}</CardDescription>
           <CardTitle>{course.title}</CardTitle>
-          <CardDescription>{course.modules.length} modules</CardDescription>
+          <CardDescription>
+            {courseTermLabel(course)} · {course.modules.length} modules
+          </CardDescription>
         </CardHeader>
       </Card>
     </Link>

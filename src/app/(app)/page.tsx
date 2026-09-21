@@ -1,13 +1,16 @@
 import Link from "next/link";
 import { CourseCard } from "@/components/course-card";
 import { materialPath } from "@/components/course-modules";
+import { CourseTermFilters } from "@/components/course-term-filters";
+import { filterCourses, parseTermFilters } from "@/components/course-term";
 import { formatDueAt } from "@/components/due-date";
 import { canViewDeadline, requireDemoUser } from "@/components/demo-session";
 import { store } from "@/lib/store";
 
-export default async function HomePage() {
+export default async function HomePage({ searchParams }: PageProps<"/">) {
   const user = await requireDemoUser();
-  const courses = store.coursesForUser(user);
+  const filters = parseTermFilters(await searchParams);
+  const courses = filterCourses(store.coursesForUser(user), filters);
   const now = Date.now();
   const upcoming = store
     .deadlines()
@@ -29,11 +32,22 @@ export default async function HomePage() {
 
       <section className="flex flex-col gap-3">
         <h2 className="text-sm font-medium">Courses</h2>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {courses.map((course) => (
-            <CourseCard key={course.id} course={course} />
-          ))}
-        </div>
+        <CourseTermFilters
+          basePath="/"
+          semester={filters.semester}
+          block={filters.block}
+        />
+        {courses.length === 0 ? (
+          <p className="text-muted-foreground text-sm">
+            No courses in this term.
+          </p>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {courses.map((course) => (
+              <CourseCard key={course.id} course={course} />
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="flex flex-col gap-3">

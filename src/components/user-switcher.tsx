@@ -1,8 +1,14 @@
 "use client";
 
-import { ChevronsUpDown } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronsUpDown, Monitor, Moon, Settings, Sun } from "lucide-react";
 import { signOut, switchUser } from "@/components/demo-session-actions";
 import { RoleBadge } from "@/components/role-badge";
+import {
+  persistTheme,
+  readTheme,
+  type ThemePreference,
+} from "@/components/theme";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,7 +16,12 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { User } from "@/lib/types";
@@ -22,6 +33,12 @@ export function UserSwitcher({
   user: User;
   users: User[];
 }) {
+  const [theme, setTheme] = useState<ThemePreference>("system");
+
+  useEffect(() => {
+    setTheme(readTheme());
+  }, []);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -47,6 +64,36 @@ export function UserSwitcher({
             </DropdownMenuItem>
           ))}
         </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <Settings />
+            Settings
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent className="min-w-40">
+            <DropdownMenuRadioGroup
+              value={theme}
+              onValueChange={(value) => {
+                const next = value as ThemePreference;
+                setTheme(next);
+                persistTheme(next);
+              }}
+            >
+              <DropdownMenuRadioItem value="system">
+                <Monitor />
+                System
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="light">
+                <Sun />
+                Light
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="dark">
+                <Moon />
+                Dark
+              </DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive" onClick={() => signOut()}>
           Sign out

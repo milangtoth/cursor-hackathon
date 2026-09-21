@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { courseTermLabel } from "@/components/course-term";
 import { requireDemoUser } from "@/components/demo-session";
 import { RoleBadge } from "@/components/role-badge";
 import { store } from "@/lib/store";
@@ -46,7 +47,7 @@ export default async function AdminPage() {
                 <span className="text-muted-foreground"> · {course.title}</span>
               </span>
               <span className="text-muted-foreground shrink-0">
-                {course.modules.length} modules
+                {courseTermLabel(course)} · {course.modules.length} modules
               </span>
             </li>
           ))}

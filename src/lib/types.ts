@@ -1,4 +1,6 @@
 export type Role = "student" | "teacher" | "admin";
+export type Semester = "fall" | "spring";
+export type Block = 1 | 2 | 3 | 4;
 
 export interface User {
   id: string;
@@ -12,6 +14,9 @@ export interface Course {
   code: string;
   title: string;
   teacherId: string;
+  year: number;
+  semester: Semester;
+  block: Block;
   heroImage?: string;
   modules: Module[];
 }
@@ -110,6 +115,9 @@ export interface SourceCourse {
   code: string;
   title: string;
   teacherId: string;
+  year: number;
+  semester: Semester;
+  block: Block;
   heroImage?: string;
   modules: {
     id: string;

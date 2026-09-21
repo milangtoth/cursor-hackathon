@@ -102,7 +102,7 @@ function attachCurated(materials: Material[], chunks: Chunk[]): {
 
   const summaries: Record<string, string> = {
     "mat-cs101-syllabus":
-      "CS101 Algorithms & Data Structures (Autumn 2026, 7.5 ECTS) covers asymptotic analysis, sorting, trees, and graphs. Assessment is a sorting visualiser (20%), a graph project checkpoint (20%), and a closed-book final exam (60%) on 12 December 2026 at 09:00. If a later note disagrees with the dates in this table, the syllabus table wins.",
+      "CS101 Algorithms & Data Structures (Fall 2026, 7.5 ECTS) covers asymptotic analysis, sorting, trees, and graphs. Assessment is a sorting visualiser (20%), a graph project checkpoint (20%), and a closed-book final exam (60%) on 12 December 2026 at 09:00. If a later note disagrees with the dates in this table, the syllabus table wins.",
     "mat-cs101-sorting":
       "Week 3 lecture on insertion sort, mergesort, and quicksort: comparison counts, extra memory, and stability. Insertion sort is in-place and Θ(n²) in the worst case; mergesort is Θ(n log n) with a merge buffer and is stable. The visualiser assignment uses insertion sort and mergesort, not quicksort; count comparisons rather than swaps in the write-up.",
     "mat-cs101-a1":
@@ -141,6 +141,9 @@ async function main() {
       code: source.code,
       title: source.title,
       teacherId: source.teacherId,
+      year: source.year,
+      semester: source.semester,
+      block: source.block,
       heroImage: source.heroImage,
       modules: source.modules.map((mod) => ({
         id: mod.id,
